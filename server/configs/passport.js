@@ -1,25 +1,31 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-// const User = require("../models/User");
+const User = require("../models/User");
+const { comparePwds } = require("./bcrypt");
+const logger = require("./winston");
+const { CONFIG } = require("../ultils/constants");
 
-// const localLogin = new LocalStrategy(async (username, password, done) => {
-//   let user = await User.findOne({ username: username });
+const localLogin = new LocalStrategy(async (username, password, done) => {
+  logger.info(CONFIG.PASSPORT.VERIFYING_USER);
+  let user = await User.findOne({ username: username });
+  if (!user) {
+    logger.info(CONFIG.PASSPORT.USER_NOT_FOUND);
+    return done(null, false, { message: CONFIG.PASSPORT.USER_NOT_FOUND });
+  } else {
+    if (!comparePwds(password, user.password)) {
+      logger.info(CONFIG.PASSPORT.PASSWORD_INCORRECT);
+      return done(null, false, { message: CONFIG.PASSPORT.PASSWORD_INCORRECT });
+    } else {
+      if (!user.isActive) {
+        logger.info(CONFIG.PASSPORT.DISABLED_ACCOUNT);
+        return done(null, false, { message: CONFIG.PASSPORT.DISABLED_ACCOUNT });
+      }
+    }
+  }
+  logger.info(CONFIG.PASSPORT.VERIFYING_USER_DONE);
+  done(null, user);
+});
 
-//   if (!user) {
-//     return done(null, false, { message: "Username incorrect" });
-//   }
+passport.use(localLogin);
 
-//   if (password != user.password) {
-//     return done(null, false, { message: "Password incorrect!" });
-//   }
-
-//   if (!user.isActive) {
-//     return done(null, false, { message: "Account has been disabled" });
-//   }
-
-//   done(null, user);
-// });
-
-// passport.use(localLogin);
-
-// module.exports = passport;
+module.exports = passport;

@@ -1,10 +1,10 @@
-// require("./config/passport");
+require("./configs/passport");
 const express = require("express");
 const cors = require("cors");
 const logger = require("./configs/winston");
 const { CONFIG } = require("./ultils/constants");
-// const passport = require("passport");
-// const route = require("./routers");
+const passport = require("passport");
+const route = require("./routers");
 const dotenv = require("dotenv");
 dotenv.config({ path: ".env" });
 
@@ -23,23 +23,10 @@ app.use(
 app.use(express.json());
 app.use(cors());
 
-// app.use(passport.initialize());
+app.use(passport.initialize());
 
 /* Routing */
-// route(app);
-
-// error handler
-// app.use((err, req, res, next) => {
-//   if (err.name === "ValidationError") {
-//     var valErrors = [];
-//     Object.keys(err.errors).forEach((key) =>
-//       valErrors.push(err.errors[key].message),
-//     );
-//     res.status(422).send(valErrors);
-//   } else {
-//     console.log(err);
-//   }
-// });
+route(app);
 
 if (process.env.SERVER_PORT && process.env.HOSTNAME) {
   app.listen(process.env.SERVER_PORT, process.env.HOSTNAME, () => {
