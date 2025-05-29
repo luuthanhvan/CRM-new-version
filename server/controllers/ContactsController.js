@@ -1,136 +1,136 @@
 const Contacts = require("../models/Contact");
 const { mutipleMongooseToObject } = require("../ultils/mongoose");
 const apiResponse = require("../ultils/apiResponse");
+const logger = require("../configs/winston");
+const { RESPONSE_MESSAGE } = require("../ultils/constants");
 
-/* 
-ContactsController contains function handlers to handle request from Contacts page.
-It will recieve the data from client, send to its model and vice versa. 
-This model will interact with database to store or update data.
-*/
 class ContactsController {
-  // [POST] /contacts - function to store a contact information
   storeContact(req, res) {
-    setTimeout(() => {
-      try {
-        const contacts = new Contacts(req.body);
-        contacts.save().then(() => {
-          return apiResponse.successResponse(res, "Add contact successfully");
-        });
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
+    try {
+      logger.info(RESPONSE_MESSAGE.CREATING_NEW_CONTACT);
+      const contacts = new Contacts(req.body);
+      contacts.save().then(() => {
+        logger.info(RESPONSE_MESSAGE.CREATING_NEW_CONTACT_SUCCESS);
+        return apiResponse.successResponse(
+          res,
+          RESPONSE_MESSAGE.CREATING_NEW_CONTACT_SUCCESS
+        );
+      });
+    } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.CREATING_NEW_CONTACT_ERROR} ${err}`);
+      return apiResponse.ErrorResponse(res, err);
+    }
   }
 
-  // [POST] /contacts/list - function to get a list of contacts information
   getListOfContacts(req, res) {
     try {
+      logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACTS);
       const isAdmin = req.isAdmin,
         name = req.name;
-      if (!isAdmin) {
-        Contacts.find({ assignedTo: name }).then((contacts) => {
-          if (contacts.length > 0)
-            return apiResponse.successResponseWithData(res, "Success", {
-              contacts: mutipleMongooseToObject(contacts),
-            });
-          else
-            return apiResponse.successResponseWithData(res, "Success", {
-              contacts: [],
-            });
-        });
-      } else {
-        Contacts.find({}).then((contacts) => {
-          if (contacts.length > 0)
-            return apiResponse.successResponseWithData(res, "Success", {
-              contacts: mutipleMongooseToObject(contacts),
-            });
-          else
-            return apiResponse.successResponseWithData(res, "Success", {
-              contacts: [],
-            });
-        });
-      }
+      const query = isAdmin ? {} : { assignedTo: name };
+      Contacts.find(query).then((data) => {
+        logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACTS_SUCCESS);
+        const resData = data.length > 0 ? mutipleMongooseToObject(data) : [];
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACTS_SUCCESS,
+          resData
+        );
+      });
     } catch (err) {
+      logger.error(
+        `${RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACTS_ERROR} ${err}`
+      );
       return apiResponse.ErrorResponse(res, err);
     }
   }
 
-  // [GET] /contacts/:id - function to get a contact information by contact ID
   getContact(req, res) {
-    let contactId = req.params.id;
     try {
+      logger.info(RESPONSE_MESSAGE.FETCHING_CONTACT);
+      let contactId = req.params.id;
       Contacts.findOne({ _id: contactId }).then((contact) => {
-        return apiResponse.successResponseWithData(res, "Success", {
-          contact: contact,
-        });
+        logger.info(RESPONSE_MESSAGE.FETCHING_CONTACT_SUCCESS);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FETCHING_CONTACT_SUCCESS,
+          contact
+        );
       });
     } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.FETCHING_CONTACT_ERROR} ${err}`);
       return apiResponse.ErrorResponse(res, err);
     }
   }
 
-  // [PUT] /contacts/:id - function to update a contact information by contact ID
   updateContact(req, res) {
-    let contactId = req.params.id;
-    let contactInfo = req.body;
-    setTimeout(() => {
-      try {
-        Contacts.updateOne({ _id: contactId }, contactInfo).then(() => {
-          return apiResponse.successResponse(
-            res,
-            "Update contact successfully"
-          );
-        });
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
-  }
-
-  // [DELETE] /contacts/:id - function to delete a contact information by contact ID
-  deleteContact(req, res) {
-    let contactId = req.params.id;
-    setTimeout(() => {
-      try {
-        Contacts.remove({ _id: contactId }).then(() => {
-          return apiResponse.successResponse(
-            res,
-            "Delete contact successfully"
-          );
-        });
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
-  }
-
-  // [POST] /delete - function to delete multi contacts information by list of contact ID
-  multiDeleteContact(req, res) {
-    let contactIds = req.body;
-    setTimeout(() => {
-      try {
-        Contacts.remove({ _id: { $in: contactIds } }).then(() => {
-          return apiResponse.successResponse(
-            res,
-            "Delete list of contacts successfully"
-          );
-        });
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
-  }
-
-  // [GET] /search/:contactName - function to find contacts by contact name
-  findContact(req, res) {
-    let contactName = req.params.contactName;
     try {
-      Contacts.find({ contactName: contactName }).then((contacts) => {
-        return apiResponse.successResponseWithData(res, "Success", {
-          contacts: contacts,
-        });
+      logger.info(RESPONSE_MESSAGE.UPDATING_CONTACT);
+      let contactId = req.params.id;
+      let contactInfo = req.body;
+      Contacts.updateOne({ _id: contactId }, contactInfo).then(() => {
+        logger.info(RESPONSE_MESSAGE.UPDATING_CONTACT_SUCCESS);
+        return apiResponse.successResponse(
+          res,
+          RESPONSE_MESSAGE.UPDATING_CONTACT_SUCCESS
+        );
       });
     } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.UPDATING_CONTACT_ERROR} ${err}`);
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
+
+  deleteContact(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.DELETING_CONTACT);
+      let contactId = req.params.id;
+      Contacts.remove({ _id: contactId }).then(() => {
+        logger.info(RESPONSE_MESSAGE.DELETING_CONTACT_SUCCESS);
+        return apiResponse.successResponse(
+          res,
+          RESPONSE_MESSAGE.DELETING_CONTACT_SUCCESS
+        );
+      });
+    } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.DELETING_CONTACT_ERROR} ${err}`);
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
+
+  multiDeleteContact(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_CONTACTS);
+      let contactIds = req.body;
+      Contacts.remove({ _id: { $in: contactIds } }).then(() => {
+        logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_CONTACTS_SUCCESS);
+        return apiResponse.successResponse(
+          res,
+          RESPONSE_MESSAGE.DELETING_LIST_OF_CONTACTS_SUCCESS
+        );
+      });
+    } catch (err) {
+      logger.error(
+        `${RESPONSE_MESSAGE.DELETING_LIST_OF_CONTACTS_ERROR} ${err}`
+      );
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
+
+  findContact(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.FINDING_CONTACT_BY_NAME);
+      let contactName = req.params.contactName;
+      Contacts.find({ contactName: contactName }).then((contacts) => {
+        logger.info(RESPONSE_MESSAGE.FINDING_CONTACT_BY_NAME_SUCCESS);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FINDING_CONTACT_BY_NAME_SUCCESS,
+          contacts
+        );
+      });
+    } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.FINDING_CONTACT_BY_NAME_ERROR} ${err}`);
       return apiResponse.ErrorResponse(res, err);
     }
   }

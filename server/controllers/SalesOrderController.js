@@ -1,133 +1,138 @@
 const SalesOrder = require("../models/SalesOrder");
 const { mutipleMongooseToObject } = require("../ultils/mongoose");
 const apiResponse = require("../ultils/apiResponse");
+const logger = require("../configs/winston");
+const { RESPONSE_MESSAGE } = require("../ultils/constants");
 
-/* 
-SalesOrderController contains function handlers to handle request from Sales order page.
-It will recieve the data from client, send to its model and vice versa. 
-This model will interact with database to store or update data.
-*/
 class SalesOrderController {
-  // [POST] /sales_order - function to store a sale order information
   storeSalesOrder(req, res) {
-    setTimeout(() => {
-      try {
-        const saleOrder = new SalesOrder(req.body);
-        saleOrder.save().then(() => {
-          return apiResponse.successResponse(
-            res,
-            "Add sale order successfully"
-          );
-        });
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
+    try {
+      logger.info(RESPONSE_MESSAGE.CREATING_NEW_SALES_ORDER);
+      const saleOrder = new SalesOrder(req.body);
+      saleOrder.save().then(() => {
+        logger.info(RESPONSE_MESSAGE.CREATING_NEW_SALES_ORDER_SUCCESS);
+        return apiResponse.successResponse(
+          res,
+          RESPONSE_MESSAGE.CREATING_NEW_SALES_ORDER_SUCCESS
+        );
+      });
+    } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.CREATING_NEW_SALES_ORDER_ERROR} ${err}`);
+      return apiResponse.ErrorResponse(res, err);
+    }
   }
 
-  // [POST] /sales_order/list - function to get a list of sales order information
   getListOfSalesOrders(req, res) {
     try {
+      logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_SALES_ORDER);
       const isAdmin = req.isAdmin,
         name = req.name;
-      if (!isAdmin) {
-        SalesOrder.find({ assignedTo: name }).then((salesOrder) => {
-          if (salesOrder.length > 0)
-            return apiResponse.successResponseWithData(res, "Success", {
-              salesOrder: mutipleMongooseToObject(salesOrder),
-            });
-          else return apiResponse.successResponseWithData(res, "Success", []);
-        });
-      } else {
-        SalesOrder.find({}).then((salesOrder) => {
-          if (salesOrder.length > 0)
-            return apiResponse.successResponseWithData(res, "Success", {
-              salesOrder: mutipleMongooseToObject(salesOrder),
-            });
-          else return apiResponse.successResponseWithData(res, "Success", []);
-        });
-      }
+      const query = isAdmin ? {} : { assignedTo: name };
+      SalesOrder.find(query).then((data) => {
+        const resData = data.length > 0 ? mutipleMongooseToObject(data) : [];
+        logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_SALES_ORDER_SUCCESS);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FETCHING_LIST_OF_SALES_ORDER_SUCCESS,
+          resData
+        );
+      });
     } catch (err) {
+      logger.error(
+        `${RESPONSE_MESSAGE.FETCHING_LIST_OF_SALES_ORDER_ERROR} ${err}`
+      );
       return apiResponse.ErrorResponse(res, err);
     }
   }
 
-  // [GET] /sales_order/:id - function to get a sale order information by sale order ID
   getSalesOrder(req, res) {
-    let saleOrderId = req.params.id;
     try {
-      SalesOrder.findOne({ _id: saleOrderId }).then((saleOrder) => {
-        return apiResponse.successResponseWithData(res, "Success", {
-          saleOrder: saleOrder,
-        });
+      logger.info(RESPONSE_MESSAGE.FETCHING_SALES_ORDER);
+      const saleOrderId = req.params.id;
+      SalesOrder.findOne({ _id: saleOrderId }).then((data) => {
+        logger.info(RESPONSE_MESSAGE.FETCHING_SALES_ORDER_SUCCESS);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FETCHING_SALES_ORDER_SUCCESS,
+          data
+        );
       });
     } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.FETCHING_SALES_ORDER_ERROR} ${err}`);
       return apiResponse.ErrorResponse(res, err);
     }
   }
 
-  // [PUT] /sales_order/:id - function to update a sale order information by sale order ID
   updateSalesOrder(req, res) {
-    let saleOrderId = req.params.id;
-    let saleOrderInfo = req.body;
-    setTimeout(() => {
-      try {
-        SalesOrder.updateOne({ _id: saleOrderId }, saleOrderInfo).then(() => {
-          return apiResponse.successResponse(
-            res,
-            "Update sale order successfully"
-          );
-        });
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
-  }
-
-  // [DELETE] /sales_order/:id - function to delete a sale order information by sale order ID
-  deleteSalesOrder(req, res) {
-    let saleOrderId = req.params.id;
-    setTimeout(() => {
-      try {
-        SalesOrder.remove({ _id: saleOrderId }).then(() => {
-          return apiResponse.successResponse(
-            res,
-            "Delete sale order successfully"
-          );
-        });
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
-  }
-
-  // [POST] /delete - function to delete multi sales orders information by list of sales orders ID
-  deleteMultiSalesOrders(req, res) {
-    let salesOrderIds = req.body;
-    setTimeout(() => {
-      try {
-        SalesOrder.remove({ _id: { $in: salesOrderIds } }).then(() => {
-          return apiResponse.successResponse(
-            res,
-            "Delete sales orders successfully"
-          );
-        });
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
-  }
-
-  // [GET] /search/:salesOrder - function to find sales orders by subject
-  findSalesOrder(req, res) {
-    let contactName = req.params.contactName;
     try {
-      SalesOrder.find({ contactName: contactName }).then((salesOrder) => {
-        return apiResponse.successResponseWithData(res, "Success", {
-          salesOrder: salesOrder,
-        });
+      logger.info(RESPONSE_MESSAGE.UPDATING_SALES_ORDER);
+      const saleOrderId = req.params.id;
+      const saleOrderInfo = req.body;
+      SalesOrder.updateOne({ _id: saleOrderId }, saleOrderInfo).then(() => {
+        logger.info(RESPONSE_MESSAGE.UPDATING_SALES_ORDER_SUCCESS);
+        return apiResponse.successResponse(
+          res,
+          RESPONSE_MESSAGE.UPDATING_SALES_ORDER_SUCCESS
+        );
       });
     } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.UPDATING_SALES_ORDER_ERROR} ${err}`);
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
+
+  deleteSalesOrder(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.DELETING_SALES_ORDER);
+      const saleOrderId = req.params.id;
+      SalesOrder.remove({ _id: saleOrderId }).then(() => {
+        logger.info(RESPONSE_MESSAGE.DELETING_SALES_ORDER_SUCCESS);
+        return apiResponse.successResponse(
+          res,
+          RESPONSE_MESSAGE.DELETING_SALES_ORDER_SUCCESS
+        );
+      });
+    } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.DELETING_SALES_ORDER_ERROR} ${err}`);
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
+
+  deleteMultiSalesOrders(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDER);
+      const salesOrderIds = req.body;
+      SalesOrder.remove({ _id: { $in: salesOrderIds } }).then(() => {
+        logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDER_SUCCESS);
+        return apiResponse.successResponse(
+          res,
+          RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDER_SUCCESS
+        );
+      });
+    } catch (err) {
+      logger.error(
+        `${RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDER_ERROR} ${err}`
+      );
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
+
+  findSalesOrder(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_ID);
+      const contactName = req.params.contactName;
+      SalesOrder.find({ contactName: contactName }).then((data) => {
+        logger.info(RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_ID_SUCCESS);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_ID_SUCCESS,
+          data
+        );
+      });
+    } catch (err) {
+      logger.error(
+        `${RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_ID_ERROR} ${err}`
+      );
       return apiResponse.ErrorResponse(res, err);
     }
   }

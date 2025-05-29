@@ -26,25 +26,15 @@ class UserController {
       logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS);
       const isAdmin = req.isAdmin,
         userId = req._id;
-      if (!isAdmin) {
-        User.findOne({ _id: userId }, "-username -password").then((data) => {
-          logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS);
-          return apiResponse.successResponseWithData(
-            res,
-            RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS,
-            data
-          );
-        });
-      } else {
-        User.find({}, "-username -password").then((data) => {
-          logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS);
-          return apiResponse.successResponseWithData(
-            res,
-            RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS,
-            data
-          );
-        });
-      }
+      const query = isAdmin ? {} : { _id: userId };
+      User.findOne(query, "-username -password").then((data) => {
+        logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS,
+          data
+        );
+      });
     } catch (err) {
       logger.error(`${RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_ERROR} ${err}`);
       return apiResponse.ErrorResponse(res, err);
