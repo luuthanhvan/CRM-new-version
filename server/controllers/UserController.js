@@ -1,113 +1,129 @@
 const User = require("../models/User");
 const apiResponse = require("../ultils/apiResponse");
 const _ = require("lodash");
-
-/* 
-UserController contains function handlers to handle request from User management page.
-It will recieve the data from client, send to its model and vice versa. 
-This model will interact with database to store or update data.
-*/
-
+const logger = require("../configs/winston");
+const { RESPONSE_MESSAGE, CONFIG } = require("../ultils/constants");
 class UserController {
-  // [POST] /user_management/create - function to create a new user
   createNewUser(req, res) {
     try {
+      logger.info(RESPONSE_MESSAGE.CREATING_NEW_USER);
       const user = new User(req.body);
       user.save().then(() => {
-        return apiResponse.successResponse(res, "Create user successfully");
+        logger.info(RESPONSE_MESSAGE.CREATING_NEW_USER_SUCCESS);
+        return apiResponse.successResponse(
+          res,
+          RESPONSE_MESSAGE.CREATING_NEW_USER_SUCCESS
+        );
       });
     } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.CREATING_NEW_USER_ERROR} ${err}`);
       return apiResponse.ErrorResponse(res, err);
     }
   }
 
-  // [POST] /user_management - function to store a user
-  storeUser(req, res) {
-    setTimeout(() => {
-      try {
-        let userInfo = req.body;
-        const user = new User(userInfo);
-
-        user.save().then(() => {
-          return apiResponse.successResponse(res, "Add user successfully");
-        });
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
-  }
-
-  // [POST] /user_management/list - function to get list of user
   getListOfUsers(req, res) {
     try {
+      logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS);
       const isAdmin = req.isAdmin,
         userId = req._id;
       if (!isAdmin) {
         User.findOne({ _id: userId }, "-username -password").then((data) => {
-          return apiResponse.successResponseWithData(res, "Success", {
-            user: data,
-          });
+          logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS);
+          return apiResponse.successResponseWithData(
+            res,
+            RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS,
+            data
+          );
         });
       } else {
         User.find({}, "-username -password").then((data) => {
-          return apiResponse.successResponseWithData(res, "Success", {
-            users: data,
-          });
+          logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS);
+          return apiResponse.successResponseWithData(
+            res,
+            RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS,
+            data
+          );
         });
       }
     } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_ERROR} ${err}`);
       return apiResponse.ErrorResponse(res, err);
     }
   }
 
-  // [GET] /user_management/:id - function to get a user
   getUser(req, res) {
-    let userId = req.params.id;
     try {
-      User.findOne({ _id: userId }).then((data) => {
-        return apiResponse.successResponseWithData(res, "Success", {
-          user: data,
-        });
+      const userId = req.params.id;
+      logger.info(RESPONSE_MESSAGE.FETCHING_USER_BY_ID);
+      User.findOne({ _id: userId }, "-password").then((data) => {
+        logger.info(RESPONSE_MESSAGE.FETCHING_USER_BY_ID_SUCCESS);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FETCHING_USER_BY_ID_SUCCESS,
+          data
+        );
       });
     } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.FETCHING_USER_BY_ID_ERROR} ${err}`);
       return apiResponse.ErrorResponse(res, err);
     }
   }
 
-  // [PUT] /user_management/:id - function to update a user
-  updateUser(req, res) {
-    setTimeout(() => {
-      try {
-        let userId = req.params.id;
-        let userInfo = req.body;
-        User.updateOne({ _id: userId }, userInfo).then(() => {
-          return apiResponse.successResponse(res, "Update user successfully");
-        });
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
+  userProfile(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.FETCHING_USER_INFO);
+      const userId = req._id;
+      User.findOne({ _id: userId }, "-username -password").then((data) => {
+        logger.info(RESPONSE_MESSAGE.FETCHING_USER_INFO_SUCCESS);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FETCHING_USER_INFO_SUCCESS,
+          data
+        );
+      });
+    } catch (err) {
+      logger.info(`${RESPONSE_MESSAGE.FETCHING_USER_INFO_ERROR} ${err}`);
+      return apiResponse.ErrorResponse(res, err);
+    }
   }
 
-  // [POST] /user_management/:id - function to change user's password
-  changePassword(req, res) {
-    setTimeout(() => {
-      try {
-        let userId = req.params.id,
-          newPass = req.body.newPass;
-
-        User.findByIdAndUpdate({ _id: userId }, { password: newPass }).then(
-          () => {
-            return apiResponse.successResponse(
-              res,
-              "Change password successfully"
-            );
-          }
+  updateUser(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.UPDATING_USER);
+      let userId = req.params.id;
+      let userInfo = req.body;
+      User.updateOne({ _id: userId }, userInfo).then(() => {
+        logger.info(RESPONSE_MESSAGE.UPDATING_USER_SUCCESS);
+        return apiResponse.successResponse(
+          res,
+          RESPONSE_MESSAGE.UPDATING_USER_SUCCESS
         );
-      } catch (err) {
-        return apiResponse.ErrorResponse(res, err);
-      }
-    }, 1000);
+      });
+    } catch (err) {
+      logger.info(`${RESPONSE_MESSAGE.UPDATING_USER_ERROR} ${err}`);
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
+
+  changePassword(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.CHANGING_USER_PASSWORD);
+      let userId = req.params.id,
+        newPass = req.body.newPass;
+
+      User.findByIdAndUpdate({ _id: userId }, { password: newPass }).then(
+        () => {
+          logger.info(RESPONSE_MESSAGE.CHANGING_USER_PASSWORD_SUCCESS);
+          return apiResponse.successResponse(
+            res,
+            RESPONSE_MESSAGE.CHANGING_USER_PASSWORD_SUCCESS
+          );
+        }
+      );
+    } catch (err) {
+      logger.info(`${RESPONSE_MESSAGE.CHANGING_USER_PASSWORD_ERROR} ${err}`);
+      return apiResponse.ErrorResponse(res, err);
+    }
   }
 }
 

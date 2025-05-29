@@ -1,57 +1,50 @@
 exports.successResponse = function (res, msg) {
-  let data = {
+  return res.status(200).json({
     status: 1, // OK
     message: msg,
-  };
-  return res.status(200).json(data);
+  });
 };
 
 exports.successResponseWithData = function (res, msg, data) {
-  let resData = {
+  return res.status(200).json({
     status: 1,
     message: msg,
-    data: data,
-  };
-  return res.status(200).json(resData);
+    data,
+  });
 };
 
 exports.ErrorResponse = function (res, msg) {
-  let data = {
+  return res.status(500).json({
     status: 0,
     message: msg,
-  };
-  return res.status(500).json(data);
+  });
 };
 
 exports.notFoundResponse = function (res, msg) {
-  let data = {
+  return res.status(404).json({
     status: 0, // ERROR
     message: msg,
-  };
-  return res.status(404).json(data);
+  });
 };
 
 exports.validationError = function (res, msg) {
-  let data = {
+  return res.status(400).json({
     status: 0,
     message: msg,
-  };
-  return res.status(400).json(data);
+  });
 };
 
 exports.validationErrorWithData = function (res, msg, data) {
-  let resData = {
+  return res.status(400).json({
     status: 0,
     message: msg,
-    data: data,
-  };
-  return res.status(400).json(resData);
+    data,
+  });
 };
 
 exports.unauthorizedResponse = function (res, msg) {
-  let data = {
+  return res.status(401).json({
     status: 0,
     message: msg,
-  };
-  return res.status(401).json(data);
+  });
 };

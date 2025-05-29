@@ -23,9 +23,7 @@ class AuthController {
         return apiResponse.successResponseWithData(
           res,
           RESPONSE_MESSAGE.REGISTER_USER_SUCCESS,
-          {
-            token: user.generateUserToken(),
-          }
+          user.generateUserToken()
         );
       }
       // unknown user or wrong password
@@ -39,42 +37,19 @@ class AuthController {
     })(req, res);
   }
 
-  userProfile(req, res) {
-    logger.info(RESPONSE_MESSAGE.FETCHING_USER_INFO);
-    const userId = req._id;
-    try {
-      User.findOne({ _id: userId }).then((data) => {
-        // remove username and password before sent user info to client
-        let userInfo = _.pick(data, [
-          "_id",
-          "name",
-          "email",
-          "phone",
-          "isAdmin",
-          "isActive",
-          "createdTime",
-        ]);
-        logger.info(RESPONSE_MESSAGE.FETCHING_USER_INFO_SUCCESS);
-        return apiResponse.successResponseWithData(res, "Success", {
-          user: userInfo,
-        });
-      });
-    } catch (err) {
-      logger.info(`${RESPONSE_MESSAGE.FETCHING_USER_INFO_ERROR} ${err}`);
-      return apiResponse.ErrorResponse(res, err);
-    }
-  }
-
   verifyUser(req, res, next) {
-    const userId = req._id;
     try {
+      const userId = req._id;
       User.findOne({ _id: userId }).then((user) => {
         if (user) {
           req.isAdmin = user.isAdmin;
           req.name = user.name;
           next();
         } else {
-          return apiResponse.notFoundResponse(res, CONFIG.PASSPORT.USER_NOT_FOUND);
+          return apiResponse.notFoundResponse(
+            res,
+            CONFIG.PASSPORT.USER_NOT_FOUND
+          );
         }
       });
     } catch (err) {
