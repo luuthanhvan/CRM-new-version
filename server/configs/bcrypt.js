@@ -4,19 +4,19 @@ dotenv.config({ path: "../.env" });
 const logger = require("./winston");
 const { CONFIG } = require("../ultils/constants");
 
-const saltRounds = process.env.SALT_ROUNDS;
+const saltRounds = Number(process.env.SALT_ROUNDS);
 
-const hashingPwd = (userInputPwd) => {
+const hashingPwd = async (userInputPwd) => {
   logger.info(CONFIG.BCRYPT.HASHING);
-  return bcrypt.hash(userInputPwd, saltRounds, (err, hashedPwd) => {
-    if (err) {
-      logger.error(`${CONFIG.BCRYPT.ERROR} Error: ${err}`);
-      return;
-    } else {
-      logger.info(CONFIG.BCRYPT.SUCCESS);
-      return hashedPwd;
-    }
-  });
+  try {
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedPwd = await bcrypt.hash(userInputPwd, salt);
+    logger.info(CONFIG.BCRYPT.SUCCESS);
+    return hashedPwd;
+  } catch(err) {
+    logger.info(`${DATABASE.ERROR}${err}`);
+    return;
+  }
 };
 
 const comparePwds = (userInputPwd, storedHashedPwd) => {

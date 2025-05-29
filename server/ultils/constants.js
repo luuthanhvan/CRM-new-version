@@ -33,7 +33,7 @@ const CONFIG = Object.freeze({
 
 const DATABASE = Object.freeze({
   ERROR: 'Error occurred: ',
-  INSERT_USERS: "All users are saved to the database!",
+  INSERT_USER: "User is saved to the database!",
 });
 
 const RESPONSE_MESSAGE = Object.freeze({

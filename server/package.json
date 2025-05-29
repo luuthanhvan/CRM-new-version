@@ -1,5 +1,5 @@
 {
-  "name": "node-18-server",
+  "name": "crm-server",
   "version": "1.0.0",
   "description": "This is new version for CRM app.",
   "main": "index.js",
@@ -21,7 +21,6 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.15.1",
-    "nodemon": "^3.1.10",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0"
