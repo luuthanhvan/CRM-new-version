@@ -1,0 +1,50 @@
+@import "~styles/base/variables";
+
+.navbar {
+  margin: 0;
+  padding: 0;
+  height: 48px;
+  background-color: $tertiary;
+  .logo {
+    width: 200px;
+    background-color: $primary;
+    height: 100%;
+    font-family: "Atlassian Sans";
+    .mat-icon {
+      width: 200px;
+      height: 110px;
+      ::ng-deep svg {
+        display: flex !important;
+      }
+    }
+  }
+}
+
+mat-sidenav-container {
+  height: calc(100vh - 48px);
+  margin: 0 auto;
+  mat-sidenav {
+    width: 200px;
+    border-right: none;
+    background-color: $secondary;
+    color: white;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    text-align: center;
+  }
+  mat-sidenav-content {
+    font-size: 2rem;
+    background-color: $grey;
+  }
+  .menu-button {
+    ::ng-deep .mat-button-wrapper {
+      width: 150px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      span {
+        font-size: 15px;
+      }
+    }
+  }
+}

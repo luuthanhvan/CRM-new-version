@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
-import { User } from '../interfaces/user';
-import * as environment from '../../assets/environment.json';
-import { ENDPOINT } from '../constant';
+import * as environment from '../../../assets/environment.json';
+import { ENDPOINT } from '../../constant';
 import { EndpointFactoryService } from './endpoint-factory.service';
 
 @Injectable({

@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { User } from '../interfaces/user';
-import * as environment from '../../assets/environment.json';
-import { ENDPOINT } from '../constant';
+import * as environment from '../../../assets/environment.json';
+import { ENDPOINT } from '../../constant';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +11,7 @@ import { ENDPOINT } from '../constant';
 export class AuthService {
   noAuthHeader = { headers: new HttpHeaders({ NoAuth: 'True' }) };
 
-  private user$ = new BehaviorSubject<User | null>(null);
+  private user$ = new BehaviorSubject<any | null>(null);
 
   constructor(private httpClient: HttpClient) {}
 
@@ -24,7 +23,7 @@ export class AuthService {
     );
   }
 
-  getUser(): Observable<User | null> {
+  getUser(): Observable<any | null> {
     return this.user$.asObservable();
   }
 
