@@ -1,4 +1,4 @@
-@import "~styles/base/variables";
+@use "../../../styles/base/variables" as *;
 
 .navbar {
   margin: 0;
@@ -20,31 +20,27 @@
   }
 }
 
-mat-sidenav-container {
-  height: calc(100vh - 48px);
-  margin: 0 auto;
-  mat-sidenav {
-    width: 200px;
-    border-right: none;
-    background-color: $secondary;
-    color: white;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    text-align: center;
-  }
-  mat-sidenav-content {
-    font-size: 2rem;
-    background-color: $grey;
-  }
-  .menu-button {
-    ::ng-deep .mat-button-wrapper {
-      width: 150px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      span {
-        font-size: 15px;
-      }
+#app-home-sidenav-container {
+  &.mat-sidenav-container {
+    height: calc(100vh - 48px);
+    margin: 0 auto;
+    mat-sidenav {
+      width: 200px;
+      border: none;
+      border-radius: 0;
+      background-color: $secondary;
+      color: white;
+      padding-top: 16px;
+      padding-bottom: 16px;
+      text-align: center;
+    }
+    mat-sidenav-content {
+      font-size: 2rem;
+      background-color: $grey;
+    }
+    .menu-button {
+      color: $grey;
     }
   }
 }
+

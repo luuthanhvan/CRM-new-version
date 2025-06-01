@@ -5,11 +5,11 @@ export const appRoutes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    children: [
-      { path: 'dashboard' },
-      { path: 'contact' },
-      { path: 'sales-order' },
-      { path: 'user' },
-    ],
+    // children: [
+    //   { path: 'dashboard' },
+    //   { path: 'contact' },
+    //   { path: 'sales-order' },
+    //   { path: 'user' },
+    // ],
   },
 ];
