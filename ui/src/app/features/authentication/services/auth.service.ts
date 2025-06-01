@@ -1,26 +1,34 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import * as environment from '../../../assets/environment.json';
-import { ENDPOINT } from '../../constant';
+import { getEndpoints } from '~core/constants/endpoints.constants';
+import { EndpointService } from '~core/services/endpoint.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  noAuthHeader = { headers: new HttpHeaders({ NoAuth: 'True' }) };
-
+  private readonly endpoints = getEndpoints();
+  private readonly endpointService = inject(EndpointService);
   private user$ = new BehaviorSubject<any | null>(null);
 
-  constructor(private httpClient: HttpClient) {}
-
-  me(): Observable<any> {
-    const url = environment.baseUrl + ENDPOINT.AUTHENTICATION;
-    return this.httpClient.get<any>(url).pipe(
-      map((res) => res['data']),
-      tap((res) => this.user$.next(res))
+  login(username: string, password: string, paramsArr?: any[]) {
+    const headerOptions = [{ name: 'NoAuth', value: 'True' }];
+    return this.endpointService.addEndpoint(
+      this.endpoints.auth.v1.signin,
+      paramsArr || [],
+      { username, password },
+      headerOptions
     );
+  }
+
+  me(paramsArr?: any[]): Observable<any> {
+    return this.endpointService
+      .fetchEndpoint(this.endpoints.user.v1.user, paramsArr || [])
+      .pipe(
+        map((res) => res['data']),
+        tap((res) => this.user$.next(res))
+      );
   }
 
   getUser(): Observable<any | null> {

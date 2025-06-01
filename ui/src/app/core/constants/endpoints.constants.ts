@@ -5,7 +5,7 @@ export const getEndpoints = () => {
     auth: {
       v1: {
         authentication: `${environment.apiBaseUrl}/v1/authentication`,
-        signin: `${environment.apiBaseUrl}/v1/signin`,
+        signin: `${environment.apiBaseUrl}/v1/authentication/signin`,
       }
     },
     user: {

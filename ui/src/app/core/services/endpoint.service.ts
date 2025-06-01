@@ -1,41 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
-import * as environment from '../../../assets/environment.json';
-import { ENDPOINT } from '../../constant';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { EndpointFactoryService } from './endpoint-factory.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EndpointService extends EndpointFactoryService {
-  get getBaseUrl() {
-    return environment.baseUrl;
-  }
-
   constructor(httpClient: HttpClient) {
     super(httpClient);
-  }
-
-  signin(
-    username: string,
-    password: string,
-    paramsArr?: any[]
-  ): Observable<any> {
-    const endpoint = this.getBaseUrl + ENDPOINT.SIGN_IN;
-    const headerOptions = [{ name: 'NoAuth', value: 'True' }];
-    return this.addEndpoint(
-      endpoint,
-      paramsArr || [],
-      { username, password },
-      headerOptions
-    );
-  }
-
-  getContact(contactId: string, paramsArr?: any[]) {
-    const endpoint = this.getBaseUrl + `${ENDPOINT.CONTACT}/${contactId}`;
-    this.fetchEndpoint(endpoint, paramsArr || []);
   }
 
   fetchEndpoint(

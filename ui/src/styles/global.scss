@@ -126,14 +126,22 @@ span {
 
 /* Form custome stylings */
 .mat-mdc-form-field {
-  font-size: 14px;
-  height: 56px;
+  // height: 56px !important;
+  font-size: 14px !important;
+  .mdc-text-field--outlined {
+    --mdc-outlined-text-field-container-shape: 28px !important;
+  }
+  --mat-form-field-container-height: 56px;
+  --mat-form-field-container-vertical-padding: 8px;
+  .mdc-floating-label {
+    font-size: 14px !important;
+  }
 }
 
 /* Define standard colors */
 .btn-primary {
-  background-color: $primary;
-  color: $light;
+  background-color: $primary !important;
+  color: $light !important;
 }
 .btn-secondary {
   background-color: $secondary;
@@ -183,22 +191,22 @@ span {
   background-color: $black20;
 }
 .text-danger {
-  color: $danger;
+  color: $danger !important;
 }
 .text-warning {
   color: $warning;
 }
 .text-white {
-  color: $pure-white;
+  color: $pure-white !important;
 }
 .text-black {
-  color: $dark;
+  color: $dark !important;
 }
 .text-info {
-  color: $info;
+  color: $info !important;
 }
 .text-grey {
-  color: $grey-text;
+  color: $grey-text !important;
 }
 .pointer {
   cursor: pointer;

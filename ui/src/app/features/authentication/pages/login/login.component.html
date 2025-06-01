@@ -1,0 +1,59 @@
+<div
+  class="login-page-wrapper d-flex justify-content-center align-items-center"
+>
+  <div
+    class="login-form-wrapper px-4 py-3 d-flex flex-column justify-content-center"
+  >
+    <h2 class="login-form-heading mx-auto text-black">Login</h2>
+    <div class="login-form mt-2">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm)">
+        <mat-form-field class="w-100 mb-3" appearance="outline">
+          <mat-icon matPrefix>account_circle</mat-icon>
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" />
+          @if (loginFormControl['username'].errors?.['required']) {
+            <mat-error>*Username is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="w-100 mb-2" appearance="outline">
+          <mat-icon class="me-2" matPrefix>lock</mat-icon>
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" minlength="6" />
+          @if (loginFormControl['password'].errors?.['required']) {
+            <mat-error>*Password is required</mat-error>
+          } 
+          @if (loginFormControl['password'].errors?.['minlength']) {
+            <mat-error>*Password must be at least 6 characters</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="d-flex justify-content-center">
+          <button
+            class="mb-3"
+            [ngClass]="loginForm.invalid ? 'btn-disabled' : 'btn-primary'"
+            mat-button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="loginForm.invalid"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="login-form-footnote mx-auto">
+      <p>
+        Don't have an account?
+        <span
+          class="text-info text-bold"
+          routerLink="/register"
+          routerLinkActive="active"
+        >
+          Register
+        </span>
+      </p>
+    </div>
+  </div>
+</div>
