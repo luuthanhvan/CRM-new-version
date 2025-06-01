@@ -24,27 +24,32 @@ h1 {
   font-weight: 800;
   line-height: 56px;
   font-family: "Atlassian Sans";
+  color: $dark;
 }
 h2 {
   font-size: 32px;
   font-weight: 700;
   line-height: 48px;
   font-family: "Atlassian Sans";
+  color: $dark;
 }
 h3 {
   font-size: 20px;
   font-weight: 500;
   font-family: "Atlassian Sans";
+  color: $dark;
 }
 h4 {
   font-size: 18px;
   font-weight: 400;
   font-family: "Atlassian Sans";
+  color: $dark;
 }
 h6 {
   font-size: 14px;
   font-weight: 300;
   font-family: "Atlassian Sans";
+  color: $dark;
 }
 p,
 span {
@@ -124,19 +129,28 @@ span {
   }
 }
 
-/* Form custome stylings */
+/* Form custom stylings */
 .mat-mdc-form-field {
   // height: 56px !important;
   font-size: 14px !important;
   .mdc-text-field--outlined {
-    --mdc-outlined-text-field-container-shape: 28px !important;
+    --mdc-outlined-text-field-container-shape: 8px !important;
   }
-  --mat-form-field-container-height: 56px;
-  --mat-form-field-container-vertical-padding: 8px;
+  --mat-form-field-container-height: 48px;
+  --mat-form-field-container-vertical-padding: 12px;
   .mdc-floating-label {
     font-size: 14px !important;
   }
 }
+
+/* Slide toggle custom stylings */
+// .mdc-switch__track {
+//   height: 26px !important;
+// }
+// .mat-mdc-slide-toggle .mdc-switch__handle:has(.mdc-switch__icons) {
+//   width: 18px !important;
+//   height: 18px !important;
+// }
 
 /* Define standard colors */
 .btn-primary {
@@ -235,10 +249,32 @@ span {
   }
 }
 
-.mat-mdc-progress-spinner {
+mat-progress-spinner {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
+}
+
+.green-success-snackbar {
+  background-color: $success !important;
+  color: #fff;
+  font-weight: 500;
+}
+
+.red-error-snackbar {
+  background-color: $danger !important;
+  color: #fff;
+  font-weight: 500;
+}
+
+.orange-warning-snackbar {
+  background-color: $warning !important;
+  color: #fff;
+  font-weight: 500;
+}
+
+.default-snackbar {
+  font-weight: 500;
 }

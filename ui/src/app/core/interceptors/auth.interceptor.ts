@@ -1,45 +1,44 @@
 import {
-  HttpInterceptor,
   HttpRequest,
-  HttpHandler,
   HttpEvent,
   HttpResponse,
+  HttpHandlerFn,
 } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-
+import type { Observable } from 'rxjs';
 import { AuthService } from '../../features/authentication/services/auth.service';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  private authService = inject(AuthService);
-  private router = inject(Router);
+export function authenticationInterceptor(
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
-    if (req.headers.get('noauth')) {
-      return next.handle(req.clone());
-    } else {
-      const clonedreq = req.clone({
-        headers: req.headers.set(
-          'Authorization',
-          'Bearer ' + this.authService.getToken()
-        ),
-      });
-      return next.handle(clonedreq).pipe(
-        tap({
-          next: (event: HttpEvent<any>) => {
-            if (event instanceof HttpResponse) {
-              // do something
-            }
-          },
-          error: (err) => {
-            if (err.error.auth == false) {
-              this.router.navigateByUrl('/login');
-            }
-          },
-        })
-      );
-    }
+  if (req.headers.get('noauth')) {
+    return next(req.clone());
+  } else {
+    const clonedreq = req.clone({
+      headers: req.headers.set(
+        'Authorization',
+        'Bearer ' + authService.getToken()
+      ),
+    });
+    return next(clonedreq).pipe(
+      tap({
+        next: (event: HttpEvent<any>) => {
+          if (event instanceof HttpResponse) {
+            // do something
+          }
+        },
+        error: (err) => {
+          if (err.error.auth == false) {
+            router.navigateByUrl('/login');
+          }
+        },
+      })
+    );
   }
 }

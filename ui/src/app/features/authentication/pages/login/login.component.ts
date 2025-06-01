@@ -14,6 +14,7 @@ import { MatButton } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { AuthService } from '~features/authentication/services/auth.service';
 import { MatInputModule } from '@angular/material/input';
+import { ToastService } from '~core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -33,6 +34,7 @@ export class LoginComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
+  private toastService = inject(ToastService);
 
   loginForm!: FormGroup;
   submitted: boolean = false;
@@ -64,9 +66,7 @@ export class LoginComponent implements OnInit {
         this.router.navigateByUrl('/');
       },
       error: (err) => {
-        this.errorMessage = err.error['message'].message;
-        // show error message
-        // this.toastMessage.showError(this.errorMessage);
+        this.toastService.showErrorMessage(err.error['message'].message);
       },
     });
   }

@@ -6,7 +6,7 @@ const jwtHelper = require("../configs/jwt");
 
 router.get("/", jwtHelper.verifyJwtToken, userController.userProfile);
 router.post("/create", userController.createNewUser);
-router.post(
+router.get(
   "/list",
   jwtHelper.verifyJwtToken,
   authController.verifyUser,

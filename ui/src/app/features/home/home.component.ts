@@ -8,6 +8,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ProgressSpinnerComponent } from '~core/components/progress-spinner/progress-spinner.component';
+import { AuthService } from '~features/authentication/services/auth.service';
+import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +27,7 @@ import { ProgressSpinnerComponent } from '~core/components/progress-spinner/prog
     MatMenuModule,
     MatSidenavModule,
     MatToolbarModule,
+    RouterModule,
   ],
 })
 export class HomeComponent implements OnInit {
@@ -31,7 +35,11 @@ export class HomeComponent implements OnInit {
   isBrowserRefresh: boolean = false;
   isAdminUser: boolean = false;
 
-  constructor(public translate: TranslateService) {
+  constructor(
+    public translate: TranslateService,
+    private authService: AuthService,
+    private router: Router
+  ) {
     // Set included languages
     this.translate.addLangs(['en', 'vi']);
     const browserLang = navigator.languages
@@ -45,11 +53,17 @@ export class HomeComponent implements OnInit {
 
     // Set the default and current language
     this.translate.setDefaultLang(defaultLang);
-    // translate.addLangs(['en', 'vi']); // tells the service which languages are available to use for translations.
-    // translate.setDefaultLang('en'); // specify a fallback set of translations to use in case there are missing translations for the current language.
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      this.authService.me().subscribe((data) => {
+        this.currentUser = data;
+        this.isAdminUser = this.currentUser.isAdmin;
+        window.localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      });
+    }
+  }
 
   openChangePwdDialog() {}
 
@@ -57,5 +71,9 @@ export class HomeComponent implements OnInit {
     this.translate.use(language);
   }
 
-  signout() {}
+  signout() {
+    this.authService.removeToken();
+    window.localStorage.clear();
+    this.router.navigateByUrl('/login');
+  }
 }

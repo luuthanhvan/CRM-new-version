@@ -24,10 +24,8 @@ class UserController {
   getListOfUsers(req, res) {
     try {
       logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS);
-      const isAdmin = req.isAdmin,
-        userId = req._id;
-      const query = isAdmin ? {} : { _id: userId };
-      User.findOne(query, "-username -password").then((data) => {
+      const query = req.isAdmin ? {} : { _id: req.userId };
+      User.find(query, "-username -password").then((data) => {
         logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS);
         return apiResponse.successResponseWithData(
           res,

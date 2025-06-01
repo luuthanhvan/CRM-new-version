@@ -1,0 +1,101 @@
+<div id="user-wrapper">
+  <div class="row mx-4 my-2">
+    <div>
+      <h2 class="float-start" id="user-heading">
+        {{ "userManagement.tableTitle" | translate }}
+      </h2>
+    </div>
+    <div class="col-12">
+      <h3 class="float-start my-1">List of Users</h3>
+      <div
+        id="user-button-row"
+        class="float-end d-flex align-items-center gap-2"
+      >
+        <button
+          mat-button
+          class="btn-primary"
+          (click)="openUserDialog()"
+        >
+          <mat-icon>add</mat-icon>
+          <span>{{ "userManagement.createNewUser" | translate }}</span>
+        </button>
+      </div>
+    </div>
+    <div class="col-12 my-3 user-list">
+      <table id="list-of-users" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- name column -->
+        <ng-container matColumnDef="name">
+          <th class="text-left ps-4" mat-header-cell *matHeaderCellDef>
+            {{ "shared.name" | translate }}
+          </th>
+          <td class="text-left ps-4" mat-cell *matCellDef="let element">
+            {{ element.name }}
+          </td>
+        </ng-container>
+
+        <!-- email column -->
+        <ng-container matColumnDef="email">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>
+            {{ "shared.email" | translate }}
+          </th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            {{ element.email }}
+          </td>
+        </ng-container>
+
+        <!-- Phone column -->
+        <ng-container matColumnDef="phone">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>
+            {{ "shared.phone" | translate }}
+          </th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            {{ element.phone }}
+          </td>
+        </ng-container>
+
+        <!-- admin column -->
+        <ng-container matColumnDef="isAdmin">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>
+            {{ "userManagement.admin" | translate }}
+          </th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            {{ element.isAdmin ? "Admin" : "User" }}
+          </td>
+        </ng-container>
+
+        <!-- active olumn -->
+        <ng-container matColumnDef="isActive">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>
+            {{ "userManagement.active" | translate }}
+          </th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            {{ element.isActive ? "Enabled " : "Disabled" }}
+          </td>
+        </ng-container>
+
+        <!-- Created time Column -->
+        <ng-container matColumnDef="createdTime">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>
+            {{ "date.createdTime" | translate }}
+          </th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            {{ element.createdTime | date: 'medium' }}
+          </td>
+        </ng-container>
+
+        <!-- Modify contact infomation column -->
+        <ng-container matColumnDef="modify">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>
+            {{ "action.modify" | translate }}
+          </th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            <mat-icon class="text-warning pointer">edit</mat-icon>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </div>
+</div>

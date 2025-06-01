@@ -1,0 +1,51 @@
+<div id="user-dialog-wrapper">
+  <h2 mat-dialog-title>Create new user</h2>
+  <mat-dialog-content>
+    <form
+      class="mx-3 my-4"
+      [formGroup]="userForm"
+    >
+      <div class="row">
+        <mat-form-field class="col-6" appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+        <mat-form-field class="col-6" appearance="outline">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" />
+        </mat-form-field>
+      </div>
+
+      <div class="row my-3">
+        <mat-form-field class="col-6" appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" />
+        </mat-form-field>
+        <mat-form-field class="col-6" appearance="outline">
+          <mat-label>Confirm password</mat-label>
+          <input matInput type="password" formControlName="confirmPassword" />
+        </mat-form-field>
+      </div>
+
+      <div class="row my-3">
+        <mat-form-field class="col-6" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" />
+        </mat-form-field>
+        <mat-form-field class="col-6" appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone" />
+        </mat-form-field>
+      </div>
+
+      <div class="row my-3 d-flex align-items-center">
+        <mat-checkbox class="col-2" formControlName="isAdmin">Admin</mat-checkbox>
+        <mat-slide-toggle class="col-2 mx-4" formControlName="isActive">Active</mat-slide-toggle>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button cdkFocusInitial (click)="onSubmit()">Submit</button>
+  </mat-dialog-actions>
+</div>

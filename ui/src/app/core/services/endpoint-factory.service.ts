@@ -10,8 +10,8 @@ export class EndpointFactoryService {
 
   public getRequestHeaders(options?: any[]) {
     let headers = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json; charset=utf-8');
-    headers = headers.append('Access-Control-Allow-Origin', '*');
+    // headers = headers.append('Content-Type', 'application/json; charset=utf-8');
+    // headers = headers.append('Access-Control-Allow-Origin', '*');
     if (options) {
       options.forEach((option) => {
         headers = headers.append(option.name, option.value);

@@ -23,25 +23,11 @@ import {
 } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { appRoutes } from './app.routes';
-
 /* Internationalization (i18n) */
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core'; // provides the core translation service, pipes, and directives.
 import { TranslateHttpLoader } from '@ngx-translate/http-loader'; // loads translations from JSON files.
 /* Internationalization (i18n) */
-
-/* Angular Material modules */
-// import { MatButton } from '@angular/material/button';
-// import { MatCardModule } from '@angular/material/card';
-// import { MatDialogModule } from '@angular/material/dialog';
-// import { MatExpansionModule } from '@angular/material/expansion';
-// import { MatFormFieldModule } from '@angular/material/form-field';
-// import { MatIconModule } from '@angular/material/icon';
-// import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-// import { MatSidenavModule } from '@angular/material/sidenav';
-// import { MatSnackBarModule } from '@angular/material/snack-bar';
-// import { MatTableModule } from '@angular/material/table';
-// import { MatToolbarModule } from '@angular/material/toolbar';
-/* Angular Material modules */
+import { authenticationInterceptor } from '~core/interceptors/auth.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'i18n/', '.json');
@@ -78,8 +64,8 @@ export const appConfig: ApplicationConfig = {
       withPreloading(PreloadAllModules)
     ),
     provideHttpClient(
-      withFetch()
-      // withInterceptors([authenticationInterceptor, cachingInterceptor]),
+      withFetch(),
+      withInterceptors([ authenticationInterceptor ]),
     ),
     provideAnimationsAsync(),
     provideTranslateService({
