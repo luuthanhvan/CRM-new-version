@@ -5,19 +5,25 @@ import {
   HttpHandlerFn,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { tap } from 'rxjs/operators';
+import { tap, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import type { Observable } from 'rxjs';
-import { AuthService } from '../../features/authentication/services/auth.service';
+import { AuthService } from '~features/authentication/services/auth.service';
+import { LoadingService } from '~core/services/loading.service';
 
 export function authenticationInterceptor(
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> {
   const authService = inject(AuthService);
+  const loadingService = inject(LoadingService);
   const router = inject(Router);
 
-  if (req.headers.get('noauth')) {
+  if (!req.headers.get('skipLoading')) {
+    loadingService.showLoading();
+  }
+
+  if (req.headers.get('NoAuth')) {
     return next(req.clone());
   } else {
     const clonedreq = req.clone({
@@ -38,6 +44,11 @@ export function authenticationInterceptor(
             router.navigateByUrl('/login');
           }
         },
+      }),
+      finalize(() => {
+        if (!req.headers.get('skipLoading')) {
+          loadingService.hideLoading();
+        }
       })
     );
   }

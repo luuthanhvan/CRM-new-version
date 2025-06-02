@@ -19,15 +19,32 @@
     "editSalesOrderInfo": "Chỉnh sửa đơn hàng",
     "salesOrderDetails": "Chi tiết đơn hàng"
   },
-  "userManagement": {
+  "user": {
+    "title": "Quản lý nhân viên",
+    "createNewUser": "Tạo mới thông tin nhân viên",
+    "editUserInfo": "Chỉnh sửa thông tin nhân viên",
+    "listOfUsers": "Danh sách nhân viên",
+    "name": "Họ tên",
     "username": "Tên đăng nhập",
     "password": "Mật khẩu",
     "confirmPassword": "Nhập lại mật khẩu",
     "admin": "Quản lý",
     "active": "Hoạt động",
-    "tableTitle": "Thông tin nhân viên",
-    "createNewUser": "Tạo mới thông tin nhân viên",
-    "editUserInfo": "Chỉnh sửa thông tin nhân viên"
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "emailHint": "Ví dụ: abc@gmail.com",
+    "error": {
+      "nameRequired": "*Họ tên là bắt buộc!",
+      "usernameRequired": "*Tên đăng nhập là bắt buộc!",
+      "passwordRequired": "*Mật khẩu là bắt buộc!",
+      "confirmPasswordRequired": "*Nhập lại mật khẩu là bắt buộc!",
+      "emailRequired": "*Email là bắt buộc!",
+      "phoneRequired": "*Số điện thoại là bắt buộc!",
+      "passwordMinLength": "*Mật khẩu phải có ít nhất 6 ký tự!",
+      "passwordsMustMatch": "*Mật khẩu và Nhập lại mật khẩu phải khớp nhau!",
+      "invalidEmail": "*Địa chỉ email không hợp lệ!",
+      "invalidPhone": "*Số điện thoại không hợp lệ!"
+    }
   },
   "action": {
     "modify": "Chỉnh sửa",
@@ -37,6 +54,7 @@
     "cancel": "Hủy bỏ",
     "ok": "OK",
     "apply": "Áp dụng",
+    "submit": "Gửi",
     "back": "Trở về",
     "create": "Tạo",
     "changePassword": "Đổi mật khẩu",

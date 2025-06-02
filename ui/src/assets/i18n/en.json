@@ -19,15 +19,32 @@
     "editSalesOrderInfo": "Edit sales order information",
     "salesOrderDetails": "Sales order details"
   },
-  "userManagement": {
+  "user": {
+    "title": "User Management",
+    "createNewUser": "Create new user",
+    "editUserInfo": "Edit user information",
+    "listOfUsers": "List of Users",
+    "name": "Name",
     "username": "Username",
     "password": "Password",
     "confirmPassword": "Confirm password",
     "admin": "Admin",
     "active": "Active",
-    "tableTitle": "User information",
-    "createNewUser": "Create new user",
-    "editUserInfo": "Edit user information"
+    "email": "Email",
+    "phone": "Phone",
+    "emailHint": "Example: abc@gmail.com",
+    "error": {
+      "nameRequired": "*Name is required!",
+      "usernameRequired": "*Username is required!",
+      "passwordRequired": "*Password is required!",
+      "confirmPasswordRequired": "*Confirm password is required!",
+      "emailRequired": "*Email is required!",
+      "phoneRequired": "*Phone is required!",
+      "passwordMinLength": "*Password must be at least 6 characters!",
+      "passwordsMustMatch": "*Password and confirm password must match!",
+      "invalidEmail": "*Invalid email address!",
+      "invalidPhone": "*Invalid phone number!"
+    }
   },
   "action": {
     "modify": "Modify",
@@ -38,6 +55,7 @@
     "ok": "OK",
     "apply": "Apply",
     "back": "Back",
+    "submit": "Submit",
     "create": "Create",
     "changePassword": "Change password",
     "signout": "Sign-out",

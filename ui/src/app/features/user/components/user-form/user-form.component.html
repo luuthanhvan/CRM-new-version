@@ -1,51 +1,94 @@
 <div id="user-dialog-wrapper">
-  <h2 mat-dialog-title>Create new user</h2>
+  <h2 mat-dialog-title>{{ "user.createNewUser" | translate }}</h2>
   <mat-dialog-content>
-    <form
-      class="mx-3 my-4"
-      [formGroup]="userForm"
-    >
+    <form class="mx-3 my-4" [formGroup]="userForm">
       <div class="row">
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Name</mat-label>
+          <mat-label>{{ "user.name" | translate }}</mat-label>
           <input matInput formControlName="name" />
+          @if (userForm.controls['name'].errors?.['required']) {
+          <mat-error>{{ "user.error.nameRequired" | translate }}</mat-error>
+          }
         </mat-form-field>
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Username</mat-label>
+          <mat-label>{{ "user.username" | translate }}</mat-label>
           <input matInput formControlName="username" />
+          @if (userForm.controls['username'].errors?.['required']) {
+          <mat-error>{{ "user.error.usernameRequired" | translate }}</mat-error>
+          }
         </mat-form-field>
       </div>
 
       <div class="row my-3">
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Password</mat-label>
+          <mat-label>{{ "user.password" | translate }}</mat-label>
           <input matInput type="password" formControlName="password" />
+          @if (userForm.invalid && userForm.controls['password'].errors?.['required']) {
+          <mat-error>{{ "user.error.passwordRequired" | translate }}</mat-error>
+          } @if (userForm.controls['password'].errors?.['minlength']) {
+          <mat-error>{{
+            "user.error.passwordMinLength" | translate
+          }}</mat-error>
+          }
         </mat-form-field>
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Confirm password</mat-label>
+          <mat-label>{{ "user.confirmPassword" | translate }}</mat-label>
           <input matInput type="password" formControlName="confirmPassword" />
+          @if (userForm.controls['confirmPassword'].errors?.['required']) {
+          <mat-error>{{
+            "user.error.confirmPasswordRequired" | translate
+          }}</mat-error>
+          } @if (userForm.controls['confirmPassword'].errors?.['mustMatch']) {
+          <mat-error>{{
+            "user.error.passwordsMustMatch" | translate
+          }}</mat-error>
+          }
         </mat-form-field>
       </div>
 
       <div class="row my-3">
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Email</mat-label>
+          <mat-label>{{ "user.email" | translate }}</mat-label>
           <input matInput formControlName="email" />
+          <mat-hint>{{ "user.emailHint" | translate }}</mat-hint>
+          @if (userForm.controls['email'].errors?.['required']) {
+          <mat-error>{{ "user.error.emailRequired" | translate }}</mat-error>
+          } @if (userForm.controls['email'].errors?.['email']) {
+          <mat-error>{{ "user.error.invalidEmail" | translate }}</mat-error>
+          }
         </mat-form-field>
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Phone</mat-label>
+          <mat-label>{{ "user.phone" | translate }}</mat-label>
           <input matInput formControlName="phone" />
+          @if (userForm.controls['phone'].errors?.['required']) {
+          <mat-error>{{ "user.error.phoneRequired" | translate }}</mat-error>
+          } @if (userForm.controls['phone'].errors?.['pattern']) {
+          <mat-error>{{ "user.error.invalidPhone" | translate }}</mat-error>
+          }
         </mat-form-field>
       </div>
 
       <div class="row my-3 d-flex align-items-center">
-        <mat-checkbox class="col-2" formControlName="isAdmin">Admin</mat-checkbox>
-        <mat-slide-toggle class="col-2 mx-4" formControlName="isActive">Active</mat-slide-toggle>
+        <mat-checkbox class="col-2" formControlName="isAdmin">
+          {{ "user.admin" | translate }}
+        </mat-checkbox>
+        <mat-slide-toggle class="col-2 mx-4" formControlName="isActive">
+          {{ "user.active" | translate }}
+        </mat-slide-toggle>
       </div>
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button cdkFocusInitial (click)="onSubmit()">Submit</button>
+    <button mat-button mat-dialog-close>
+      {{ "action.cancel" | translate }}
+    </button>
+    <button
+      mat-button
+      cdkFocusInitial
+      (click)="!userForm.invalid && onSubmit()"
+      [ngClass]="userForm.invalid ? 'btn-disabled' : 'btn-primary'"
+    >
+      {{ "action.submit" | translate }}
+    </button>
   </mat-dialog-actions>
 </div>

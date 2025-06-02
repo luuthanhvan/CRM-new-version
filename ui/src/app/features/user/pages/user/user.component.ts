@@ -1,5 +1,4 @@
-import { inject } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,6 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import type { User } from '~features/user/types/user.type';
 import { UserService } from '~features/user/services/user.service';
 import { UserFormComponent } from '~features/user/components/user-form/user-form.component';
@@ -29,26 +30,35 @@ import { UserFormComponent } from '~features/user/components/user-form/user-form
     MatCardModule,
     MatDatepickerModule,
     MatTableModule,
+    MatPaginatorModule,
   ],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss',
 })
 export class UserComponent implements OnInit {
+  @ViewChild(MatPaginator) userPaginator!: MatPaginator;
   private userService = inject(UserService);
   readonly dialog = inject(MatDialog);
+  dataSource = new MatTableDataSource<User>([]);
+  totalRecords: number = 0;
   displayedColumns: string[] = [
     'name',
     'email',
     'isAdmin',
     'isActive',
     'createdTime',
-    'modify',
+    // 'modify',
   ];
-  dataSource: User[] = [];
 
-  constructor() {}
+  constructor() {
+    this.dataSource.paginator = this.userPaginator;
+  }
 
   ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData() {
     const currentUserInfo = window.localStorage.getItem('currentUser');
     if (currentUserInfo) {
       const parsedUserInfo = JSON.parse(currentUserInfo);
@@ -63,17 +73,25 @@ export class UserComponent implements OnInit {
         },
       ];
       this.userService.getListOfUsers(reqParams).subscribe((data) => {
-        this.dataSource = data;
+        this.totalRecords = data.length;
+        this.dataSource = new MatTableDataSource(data);
+        this.dataSource.paginator = this.userPaginator;
       });
     }
   }
 
-  openUserDialog() {
+  openUserDialog(action: string, userId?: string) {
     const dialogRef = this.dialog.open(UserFormComponent, {
       disableClose: true,
+      width: '900px',
+      data: {
+        action,
+        userId,
+      },
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
+      // reload list of users after close the dialog
+      this.loadData();
     });
   }
 }

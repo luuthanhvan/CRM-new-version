@@ -1,10 +1,10 @@
 $primary: #006a71;
 $secondary: #48a6a7;
 $tertiary: #9acbd0;
-$danger: #ff453a;
-$warning: #ffd60a;
-$success: #30d158;
-$info: #64d2ff;
+$danger: rgb(215, 0, 21);
+$warning: rgb(255, 204, 0);
+$success: rgb(36, 138, 61);
+$info: rgb(50, 173, 230);
 $grey: #f2efe7;
 $grey-text: #8e8e93;
 $dark: #031c1d;
@@ -13,7 +13,6 @@ $black50: rgba(3, 28, 29, 0.5);
 $black20: rgba(3, 28, 29, 0.2);
 $light: #ebebf0;
 $pure-white: #ffffff;
-$mat-table-border-color: rgba(0, 0, 0, 0.12);
 $bg-two-color-gradient: linear-gradient(
   to left top,
   #f2efe7,
@@ -37,3 +36,6 @@ $bg-three-color-gradient: linear-gradient(
   #59adaf,
   #48a6a7
 );
+$bg-table-header: #f0df78;
+$mat-table-border-color: #f0cf78;
+$mat-cell-hover: rgba(240, 223, 120, 0.1);

@@ -1,0 +1,20 @@
+.mat-mdc-form-field {
+  font-size: 14px !important;
+  --mat-form-field-container-height: 48px;
+  .mat-mdc-text-field-wrapper {
+    --mdc-outlined-text-field-container-shape: 10px !important;
+  }
+  --mat-form-field-container-vertical-padding: 14px;
+  .mdc-floating-label {
+    font-size: 14px !important;
+  }
+  .mat-mdc-form-field-error-wrapper {
+    padding: 0;
+    .mat-mdc-form-field-error {
+      font-style: italic;
+    }
+  }
+  .mat-mdc-form-field-hint-wrapper {
+    padding: 0;
+  }
+}

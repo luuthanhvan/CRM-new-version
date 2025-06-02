@@ -12,8 +12,8 @@ router.get(
   authController.verifyUser,
   userController.getListOfUsers
 );
-router.get("/:id", userController.getUser);
-router.put("/:id", userController.updateUser);
-router.post("/:id", userController.changePassword);
+router.get("/:id", jwtHelper.verifyJwtToken, userController.getUser);
+router.put("/:id", jwtHelper.verifyJwtToken, userController.updateUser);
+router.post("/:id", jwtHelper.verifyJwtToken, userController.changePassword);
 
 module.exports = router;

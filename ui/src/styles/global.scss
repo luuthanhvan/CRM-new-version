@@ -1,7 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
-// @import "@angular/material/prebuilt-themes/azure-blue.css";
 @use "./base/variables" as *;
 @use "./base/font" as *;
+@use "./base/table" as *;
+@use "./base/typography" as *;
+@use "./base/form" as *;
+@use "./base/snackbar" as *;
 
 * {
   box-sizing: border-box;
@@ -9,52 +12,6 @@
 html,
 body {
   height: 100%;
-}
-
-/* 
-This typography stylings refer to Atlassian's typography design
-Document can be found at https://atlassian.design/foundations/typography
-*/
-body {
-  margin: 0;
-  font-family: "Atlassian Sans", sans-serif;
-}
-h1 {
-  font-size: 56px;
-  font-weight: 800;
-  line-height: 56px;
-  font-family: "Atlassian Sans";
-  color: $dark;
-}
-h2 {
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 48px;
-  font-family: "Atlassian Sans";
-  color: $dark;
-}
-h3 {
-  font-size: 20px;
-  font-weight: 500;
-  font-family: "Atlassian Sans";
-  color: $dark;
-}
-h4 {
-  font-size: 18px;
-  font-weight: 400;
-  font-family: "Atlassian Sans";
-  color: $dark;
-}
-h6 {
-  font-size: 14px;
-  font-weight: 300;
-  font-family: "Atlassian Sans";
-  color: $dark;
-}
-p,
-span {
-  font-size: 14px;
-  font-family: "Atlassian Sans";
 }
 
 /* Expansion Panel custom stylings */
@@ -101,56 +58,14 @@ span {
   }
 }
 
-/* Table custom stylings */
-.mat-mdc-table {
-  width: 100%;
-  border-radius: 10px !important;
-  .mat-mdc-header-row .mat-mdc-header-cell {
-    font-size: 14px;
-    font-weight: 600;
-    font-family: "Atlassian Sans";
-    color: $black80;
-    border-right: 1px solid $mat-table-border-color;
-  }
-  th.mat-mdc-header-cell:first-of-type,
-  td.mat-mdc-cell:first-of-type {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-  th.mat-mdc-header-cell:last-of-type,
-  td.mat-mdc-cell:last-of-type {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-  .mat-mdc-row .mat-mdc-cell {
-    font-size: 14px;
-    font-family: "Atlassian Sans";
-    border-right: 1px solid $mat-table-border-color;
-  }
-}
-
-/* Form custom stylings */
-.mat-mdc-form-field {
-  // height: 56px !important;
-  font-size: 14px !important;
-  .mdc-text-field--outlined {
-    --mdc-outlined-text-field-container-shape: 8px !important;
-  }
-  --mat-form-field-container-height: 48px;
-  --mat-form-field-container-vertical-padding: 12px;
-  .mdc-floating-label {
-    font-size: 14px !important;
-  }
-}
-
 /* Slide toggle custom stylings */
-// .mdc-switch__track {
-//   height: 26px !important;
-// }
-// .mat-mdc-slide-toggle .mdc-switch__handle:has(.mdc-switch__icons) {
-//   width: 18px !important;
-//   height: 18px !important;
-// }
+.mdc-switch__track {
+  height: 30px !important;
+}
+.mat-mdc-slide-toggle .mdc-switch__handle:has(.mdc-switch__icons) {
+  width: 22px !important;
+  height: 22px !important;
+}
 
 /* Define standard colors */
 .btn-primary {
@@ -158,57 +73,57 @@ span {
   color: $light !important;
 }
 .btn-secondary {
-  background-color: $secondary;
-  color: $light;
+  background-color: $secondary !important;
+  color: $light !important;
 }
 .btn-tertiary {
-  background-color: $tertiary;
-  color: $dark;
+  background-color: $tertiary !important;
+  color: $dark !important;
 }
 .btn-grey {
-  background-color: $light;
-  color: $dark;
+  background-color: $light !important;
+  color: $dark !important;
 }
 .btn-success {
-  background-color: $success;
-  color: $pure-white;
+  background-color: $success !important;
+  color: $pure-white !important;
 }
 .btn-danger {
-  background-color: $danger;
-  color: $pure-white;
+  background-color: $danger !important;
+  color: $pure-white !important;
 }
 .btn-warning {
-  background-color: $warning;
-  color: $dark;
+  background-color: $warning !important;
+  color: $dark !important;
 }
 .btn-info {
-  background-color: $info;
-  color: $pure-white;
+  background-color: $info !important;
+  color: $pure-white !important;
 }
 .btn-disabled {
-  background-color: $black20;
-  color: $dark;
+  background-color: $black20 !important;
+  color: $dark !important;
 }
 .bg-success {
-  background-color: $success;
+  background-color: $success !important;
 }
 .bg-danger {
-  background-color: $danger;
+  background-color: $danger !important;
 }
 .bg-warning {
-  background-color: $warning;
+  background-color: $warning !important;
 }
 .bg-info {
-  background-color: $info;
+  background-color: $info !important;
 }
 .bg-disabled {
-  background-color: $black20;
+  background-color: $black20 !important;
 }
 .text-danger {
   color: $danger !important;
 }
 .text-warning {
-  color: $warning;
+  color: $warning !important;
 }
 .text-white {
   color: $pure-white !important;
@@ -238,43 +153,10 @@ span {
   font-weight: 600;
 }
 
-.customDialog {
-  max-height: 95%;
-  width: 50%;
-  overflow-y: auto;
-
-  mat-grid-tile {
-    border: 1px solid lightgray;
-    padding: 0;
-  }
-}
-
 mat-progress-spinner {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
-}
-
-.green-success-snackbar {
-  background-color: $success !important;
-  color: #fff;
-  font-weight: 500;
-}
-
-.red-error-snackbar {
-  background-color: $danger !important;
-  color: #fff;
-  font-weight: 500;
-}
-
-.orange-warning-snackbar {
-  background-color: $warning !important;
-  color: #fff;
-  font-weight: 500;
-}
-
-.default-snackbar {
-  font-weight: 500;
 }

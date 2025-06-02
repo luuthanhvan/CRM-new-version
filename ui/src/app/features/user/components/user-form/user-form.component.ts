@@ -17,13 +17,11 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ToastService } from '~core/services/toast.service';
 import { MustMatch } from '~core/validators/common.validator';
 import { UserService } from '~features/user/services/user.service';
-import { LoadingService } from '~core/services/loading.service';
 import type { User } from '~features/user/types/user.type';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-form',
@@ -47,10 +45,11 @@ export class UserFormComponent implements OnInit {
   readonly dialogRef = inject(MatDialogRef<UserFormComponent>);
   private formBuilder = inject(FormBuilder);
   private toastService = inject(ToastService);
-  private loadingService = inject(LoadingService);
   private userService = inject(UserService);
-
+  data = inject(MAT_DIALOG_DATA);
   userForm!: FormGroup;
+
+  constructor() {}
 
   ngOnInit(): void {
     this.userForm = this.formBuilder.group(
@@ -74,6 +73,28 @@ export class UserFormComponent implements OnInit {
         validators: MustMatch('password', 'confirmPassword'),
       }
     );
+    if (this.data && this.data.action === 'edit') {
+      this.getUserById();
+    }
+  }
+
+  getUserById() {
+    console.log('data', this.data);
+    this.userService.getUser(this.data.userId, []).subscribe((data) => {
+      this.setFormData(data);
+    });
+  }
+
+  setFormData(data: User) {
+    this.userForm.controls['name'].setValue(data['name'] || '');
+    this.userForm.controls['username'].setValue(data['username'] || '');
+    this.userForm.controls['password'].setValue(data['password'] || '');
+    this.userForm.controls['confirmPassword'].setValue(data['password'] || '');
+    this.userForm.controls['email'].setValue(data['email'] || '');
+    this.userForm.controls['phone'].setValue(data['phone'] || '');
+    this.userForm.controls['isAdmin'].setValue(data['isAdmin'] || false);
+    this.userForm.controls['isActive'].setValue(data['isActive'] || false);
+    console.log(this.userForm);
   }
 
   onSubmit() {
@@ -86,20 +107,34 @@ export class UserFormComponent implements OnInit {
       isAdmin: this.userForm.controls['isAdmin'].value,
       isActive: this.userForm.controls['isActive'].value,
     };
-    this.loadingService.showLoading();
-    this.userService
-      .createUser(userInfo)
-      .pipe(
-        tap((res) => {
-          this.loadingService.hideLoading();
-          if (res['status'] === 1) {
-            this.toastService.showSuccessMessage('Success to add a new user!');
-            this.dialogRef.close();
-          } else {
-            this.toastService.showErrorMessage('Failed to add a new user!');
-          }
-        })
-      )
-      .subscribe();
+    if (this.data.action === 'add') {
+      this.userService
+        .createUser(userInfo)
+        .pipe(
+          tap((res) => {
+            if (res['status'] === 1) {
+              this.toastService.showSuccessMessage(
+                'Add new User!'
+              );
+              this.dialogRef.close();
+            }
+          })
+        )
+        .subscribe();
+    } else {
+      this.userService
+        .updateUser(this.data.userId, userInfo)
+        .pipe(
+          tap((res) => {
+            if (res['status'] === 1) {
+              this.toastService.showSuccessMessage(
+                'Update the User!'
+              );
+              this.dialogRef.close();
+            }
+          })
+        )
+        .subscribe();
+    }
   }
 }

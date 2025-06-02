@@ -31,10 +31,7 @@ export class UserService {
 
   getListOfUsers(paramsArr?: any[]): Observable<User[]> {
     return this.endpointService
-      .fetchEndpoint(
-        this.endpoints.user.v1.userList,
-        paramsArr || []
-      )
+      .fetchEndpoint(this.endpoints.user.v1.userList, paramsArr || [])
       .pipe(
         map((res) => res['data']),
         takeUntil(this.stop$),
@@ -43,10 +40,12 @@ export class UserService {
   }
 
   getUser(userId: string, paramsArr?: any[]): Observable<User> {
+    const headerOptions = [{ name: 'skipLoading', value: 'true' }];
     return this.endpointService
       .fetchEndpoint(
         `${this.endpoints.user.v1.user}/${userId}`,
-        paramsArr || []
+        paramsArr || [],
+        headerOptions
       )
       .pipe(
         map((res) => res['data']),
@@ -58,12 +57,14 @@ export class UserService {
     userId: string,
     userInfo: User,
     paramsArr?: any[]
-  ): Observable<void> {
+  ): Observable<any> {
+    const headerOptions = [{ name: 'skipLoading', value: 'true' }];
     return this.endpointService
       .updateEndpoint(
         `${this.endpoints.user.v1.user}/${userId}`,
         paramsArr || [],
-        userInfo
+        userInfo,
+        headerOptions
       )
       .pipe(takeUntil(this.stop$));
   }
