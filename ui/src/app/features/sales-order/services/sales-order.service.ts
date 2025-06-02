@@ -1,29 +1,32 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil, tap } from 'rxjs/operators';
-import type { Contact } from '~features/contact/types/contact.type';
 import { getEndpoints } from '~core/constants/endpoints.constants';
 import { EndpointService } from '~core/services/endpoint.service';
+import type { SalesOrder } from '~features/sales-order/types/sales-order.type';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ContactService {
+export class SalesOrderService {
   private readonly endpoints = getEndpoints();
   private readonly endpointService = inject(EndpointService);
   private stop$: Subject<void> = new Subject<void>();
 
-  addContact(data: Contact, paramsArr?: any[]): Observable<any> {
+  addSalesOrder(data: SalesOrder, paramsArr?: any[]): Observable<any> {
     return this.endpointService.addEndpoint(
-      this.endpoints.contact.v1.contact,
+      this.endpoints.salesOrder.v1.salesOrder,
       paramsArr || [],
       data
     );
   }
 
-  getListOfContacts(paramsArr?: any[]): Observable<Contact[]> {
+  getListOfSalesOrder(paramsArr?: any[]): Observable<SalesOrder[]> {
     return this.endpointService
-      .fetchEndpoint(this.endpoints.contact.v1.contactList, paramsArr || [])
+      .fetchEndpoint(
+        this.endpoints.salesOrder.v1.salesOrderList,
+        paramsArr || []
+      )
       .pipe(
         map((res) => res['data']),
         takeUntil(this.stop$),
@@ -31,11 +34,11 @@ export class ContactService {
       );
   }
 
-  getContact(contactId: string, paramsArr?: any[]): Observable<Contact> {
+  getSalesOrder(orderId: string, paramsArr?: any[]): Observable<SalesOrder> {
     const headerOptions = [{ name: 'skipLoading', value: 'true' }];
     return this.endpointService
       .fetchEndpoint(
-        `${this.endpoints.contact.v1.contact}/${contactId}`,
+        `${this.endpoints.salesOrder.v1.salesOrder}/${orderId}`,
         paramsArr || [],
         headerOptions
       )
@@ -45,34 +48,37 @@ export class ContactService {
       );
   }
 
-  updateContact(
-    contactId: string,
-    contactInfo: Contact,
+  updateSalesOrder(
+    orderId: string,
+    orderInfo: SalesOrder,
     paramsArr?: any[]
   ): Observable<any> {
     const headerOptions = [{ name: 'skipLoading', value: 'true' }];
     return this.endpointService
       .updateEndpoint(
-        `${this.endpoints.contact.v1.contact}/${contactId}`,
+        `${this.endpoints.salesOrder.v1.salesOrder}/${orderId}`,
         paramsArr || [],
-        contactInfo,
+        orderInfo,
         headerOptions
       )
       .pipe(takeUntil(this.stop$));
   }
 
-  deleteContact(contactId: string, paramsArr?: any[]): Observable<any> {
+  deleteSalesOrder(orderId: string, paramsArr?: any[]): Observable<any> {
     return this.endpointService
       .deleteEndpoint(
-        `${this.endpoints.contact.v1.contact}/${contactId}`,
+        `${this.endpoints.salesOrder.v1.salesOrder}/${orderId}`,
         paramsArr || []
       )
       .pipe(takeUntil(this.stop$));
   }
 
-  searchContacts(subject: string, paramsArr?: any[]): Observable<any> {
+  searchSalesOrder(
+    subject: string,
+    paramsArr?: any[]
+  ): Observable<any> {
     return this.endpointService.fetchEndpoint(
-      `${this.endpoints.contact.v1.searchContact}/${subject}`,
+      `${this.endpoints.salesOrder.v1.searchSalesOrder}/${subject}`,
       paramsArr || []
     );
   }

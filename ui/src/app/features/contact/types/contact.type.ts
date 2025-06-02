@@ -1,6 +1,6 @@
 export type Contact = {
-  _id: string;
-  no: Number;
+  _id?: string;
+  no?: Number;
   contactName: string;
   salutation: string;
   mobilePhone: string;
@@ -12,6 +12,6 @@ export type Contact = {
   creator: string;
   address: string;
   description: string;
-  createdTime: string;
-  updatedTime: string;
+  createdTime?: string;
+  updatedTime?: string;
 };

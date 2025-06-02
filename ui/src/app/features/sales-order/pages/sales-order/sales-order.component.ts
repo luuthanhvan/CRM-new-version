@@ -32,14 +32,14 @@ import {
 import type { User } from '~features/user/types/user.type';
 import { AuthService } from '~features/authentication/services/auth.service';
 import { DateRangeValidator } from '~core/validators/common.validator';
+import { SalesOrder } from '~features/sales-order/types/sales-order.type';
+import { SalesOrderService } from '~features/sales-order/services/sales-order.service';
 import { UserService } from '~features/user/services/user.service';
 import { ToastService } from '~core/services/toast.service';
-import { ContactService } from '~features/contact/services/contact.service';
-import type { Contact } from '~features/contact/types/contact.type';
 import moment from 'moment';
 
 interface FilterCriteria {
-  leadSrc?: string;
+  status?: string;
   assignedTo?: string;
   contactName?: string;
   createdTimeFrom?: any;
@@ -49,7 +49,7 @@ interface FilterCriteria {
 }
 
 @Component({
-  selector: 'app-contact',
+  selector: 'app-sales-order',
   imports: [
     CommonModule,
     TranslateModule,
@@ -60,93 +60,79 @@ interface FilterCriteria {
     MatButton,
     MatInputModule,
     MatDialogModule,
-    MatCardModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
+    MatCardModule,
     MatSelectModule,
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
-  templateUrl: './contact.component.html',
-  styleUrl: './contact.component.scss',
+  templateUrl: './sales-order.component.html',
+  styleUrl: './sales-order.component.scss',
 })
-export class ContactComponent implements OnInit {
+export class SalesOrderComponent {
   displayedColumns: string[] = [
     'check',
+    'subject',
     'contactName',
-    'salutation',
-    'leadSrc',
+    'status',
+    'total',
     'assignedTo',
     'createdTime',
     'updatedTime',
     'modify',
     'delete',
   ];
+  statusNames: string[] = ['Created', 'Approved', 'Delivered', 'Canceled'];
+  statusFromDashboard!: string;
 
-  leadSources: string[] = [
-    'Existing Customer',
-    'Partner',
-    'Conference',
-    'Website',
-    'Word of mouth',
-    'Other',
-  ];
-  leadSrcFromDashboard!: string;
-  assignedFromDashboard!: string;
-
-  // leadSrc and assignedTo form controls will used for autofill when user click on contact chart or table
-  // so it need to be globally assigned a value
-  assignedTo: FormControl = new FormControl();
-  leadSrc: FormControl = new FormControl();
-  searchText!: FormControl;
   createdTimeForm!: FormGroup;
   updatedTimeForm!: FormGroup;
+  // status form controls will used for autofill when user click on sales order chart
+  // so it need to be globally assigned a value
+  status: FormControl = new FormControl('');
+  searchText!: FormControl;
+  contactName!: FormControl;
+  assignedTo!: FormControl;
+
+  user$!: Observable<User>;
+  assignedToUsers$!: Observable<User[]>;
+  salesOrders$!: Observable<SalesOrder[]>;
+  search$!: Observable<SalesOrder[]>;
+  result$!: Observable<SalesOrder[]>;
+  filterSubject: BehaviorSubject<FilterCriteria> =
+    new BehaviorSubject<FilterCriteria>({});
 
   checkArray: string[] = [];
   isDisabled: boolean = true; // it used to show/hide the mass delete button
   submitted: boolean = false;
   show: boolean = true;
-
-  user$!: Observable<User>;
-  assignedToUsers$!: Observable<User[]>;
-  contacts$!: Observable<Contact[]>;
-  result$!: Observable<Contact[]>;
-  search$!: Observable<Contact[]>;
-  filterSubject: BehaviorSubject<FilterCriteria> =
-    new BehaviorSubject<FilterCriteria>({});
-
   dataSource: any[] = [];
 
   constructor(
     private router: Router,
-    protected contactService: ContactService,
-    public dialog: MatDialog,
+    protected salesOrderService: SalesOrderService,
     private formBuilder: FormBuilder,
+    public dialog: MatDialog,
     private route: ActivatedRoute,
-    private authService: AuthService,
-    private userService: UserService
+    private toastService: ToastService,
+    private userService: UserService,
+    private authService: AuthService
   ) {
-    // clear params (leadSrc or assignedTo) before get all data
-    this.router.navigateByUrl('/contact');
-    // get lead source passed from dashboard page
+    // clear params (status) before get all data
+    this.router.navigateByUrl('/sales-order');
+    // get status passed from dashboard page
     this.route.queryParams.subscribe((params) => {
-      if (params) {
-        if (params['leadSrc']) {
-          this.leadSrcFromDashboard = params['leadSrc'];
-          this.leadSrc = new FormControl(this.leadSrcFromDashboard);
-          this.applySelectFilter(this.leadSrc.value, 'leadSrc');
-        }
-        if (params['assignedTo']) {
-          this.assignedFromDashboard = params['assignedTo'];
-          this.assignedTo = new FormControl(this.assignedFromDashboard);
-          this.applySelectFilter(this.assignedTo.value, 'assignedTo');
-        }
+      if (params['status']) {
+        this.statusFromDashboard = params['status'];
+        this.status = new FormControl(this.statusFromDashboard);
+        this.applySelectFilter(this.status.value, 'status');
       }
     });
   }
 
-  ngOnInit(): void {
-    this.initData();
+  ngOnInit() {
+    this.init();
 
     // init created time and updated time form groups
     this.createdTimeForm = this.formBuilder.group(
@@ -166,12 +152,13 @@ export class ContactComponent implements OnInit {
     );
   }
 
-  initData() {
-    this.searchText = new FormControl();
+  init() {
+    this.searchText = new FormControl('');
+    this.assignedTo = new FormControl('');
 
     this.assignedToUsers$ = this.userService.getListOfUsers().pipe(
       tap((data) => {
-        if (data.length == 1) {
+        if (data.length === 1) {
           this.show = false;
         }
       })
@@ -180,27 +167,29 @@ export class ContactComponent implements OnInit {
     this.search$ = this.searchText.valueChanges.pipe(
       startWith(''),
       tap((contactName) => {
-        console.log(contactName);
+        // do something if the search keyword need to be handle before passed it to next stage
       }),
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((contactName) =>
-        contactName ? this.contactService.searchContacts(contactName) : of(null)
+        contactName
+          ? this.salesOrderService.searchSalesOrder(contactName)
+          : of(null)
       ),
       map((res) => res && res['data'])
     );
 
     combineLatest([
-      this.contactService.getListOfContacts(),
+      this.salesOrderService.getListOfSalesOrder(),
       this.filterSubject,
       this.search$,
     ])
       .pipe(
         map(
           ([
-            contacts,
+            salesOrder,
             {
-              leadSrc,
+              status,
               assignedTo,
               contactName,
               createdTimeFrom,
@@ -210,10 +199,10 @@ export class ContactComponent implements OnInit {
             },
             searchResult,
           ]) => {
-            const sourceData = searchResult ? searchResult : contacts;
+            const sourceData = searchResult ? searchResult : salesOrder;
             return sourceData.filter((d) => {
               return (
-                (leadSrc ? d.leadSrc === leadSrc : true) &&
+                (status ? d.status === status : true) &&
                 (assignedTo ? d.assignedTo === assignedTo : true) &&
                 (createdTimeFrom
                   ? moment(d.createdTime).isBefore(createdTimeFrom)
@@ -240,19 +229,19 @@ export class ContactComponent implements OnInit {
   // function to reset the table
   reset() {
     this.filterSubject.next({});
-    this.initData();
-    this.leadSrc = new FormControl('');
-    this.assignedTo = new FormControl('');
+    this.init();
+    this.status = new FormControl('');
+    // reset form groups
     this.createdTimeForm.reset();
     this.updatedTimeForm.reset();
   }
 
-  // navigate to edit contact page
-  navigateToEdit(contactId: string) {
-    let navigationExtras: NavigationExtras = {
-      queryParams: { id: contactId },
-    };
-    this.router.navigate(['/contacts/edit'], navigationExtras);
+  // navigate to the edit sale order page
+  navigateToEdit(saleOrderId: string) {
+    // let navigationExtras: NavigationExtras = {
+    //   queryParams: { id: saleOrderId },
+    // };
+    // this.router.navigate(['/sales_order/edit'], navigationExtras);
   }
 
   applySelectFilter(filterValue: string, filterBy: string) {
@@ -285,11 +274,25 @@ export class ContactComponent implements OnInit {
     }
   }
 
-  onDelete(contactId: string, contactName: string) {}
+  onDelete(saleOrderId: string, sub: string) {}
 
-  onCheckboxClicked(event: any) {}
+  onCheckboxClicked(e: any) {
+    this.isDisabled = false; // enable the Delete button
+    if (e.target.checked) {
+      // add the checked value to array
+      this.checkArray.push(e.target.value);
+    } else {
+      // remove the unchecked value from array
+      this.checkArray.splice(this.checkArray.indexOf(e.target.value), 1);
+    }
+
+    // if there is no value in checkArray then disable the Delete button
+    if (this.checkArray.length == 0) {
+      this.isDisabled = true;
+    }
+  }
 
   onMassDeleteBtnClicked() {}
 
-  onClickedRow(contactId: string) {}
+  onClickedRow(salesOrderId: string) {}
 }

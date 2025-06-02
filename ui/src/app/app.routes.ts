@@ -2,8 +2,9 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from '~core/guards/auth.guard';
 import { HomeComponent } from '~features/home/home.component';
 import { LoginComponent } from '~features/authentication/pages/login/login.component';
-import { UserComponent } from '~features/user/pages/user/user.component';
+// import { SalesOrderComponent } from '~features/sales-order/pages/sales-order/sales-order.component';
 // import { ContactComponent } from '~features/contact/pages/contact/contact.component';
+import { UserComponent } from '~features/user/pages/user/user.component';
 
 export const appRoutes: Routes = [
   {
@@ -13,12 +14,12 @@ export const appRoutes: Routes = [
     children: [
       // { path: 'dashboard' },
       // { path: 'contact', component: ContactComponent },
-      // { path: 'sales-order' },
+      // { path: 'sales-order', component: SalesOrderComponent },
       { path: 'user', component: UserComponent },
     ],
   },
   {
     path: 'login',
-    component: LoginComponent
-  }
+    component: LoginComponent,
+  },
 ];
