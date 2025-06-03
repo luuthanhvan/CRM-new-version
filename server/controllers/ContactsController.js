@@ -85,7 +85,7 @@ class ContactsController {
     try {
       logger.info(RESPONSE_MESSAGE.DELETING_CONTACT);
       let contactId = req.params.id;
-      Contacts.remove({ _id: contactId }).then(() => {
+      Contacts.deleteOne({ _id: contactId }).then(() => {
         logger.info(RESPONSE_MESSAGE.DELETING_CONTACT_SUCCESS);
         return apiResponse.successResponse(
           res,
@@ -102,7 +102,7 @@ class ContactsController {
     try {
       logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_CONTACTS);
       let contactIds = req.body;
-      Contacts.remove({ _id: { $in: contactIds } }).then(() => {
+      Contacts.deleteMany({ _id: { $in: contactIds } }).then(() => {
         logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_CONTACTS_SUCCESS);
         return apiResponse.successResponse(
           res,

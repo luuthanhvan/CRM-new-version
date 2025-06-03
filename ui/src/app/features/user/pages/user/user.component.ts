@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
@@ -29,9 +30,11 @@ import { UserFormComponent } from '~features/user/components/user-form/user-form
     MatInputModule,
     MatCardModule,
     MatDatepickerModule,
+    MatNativeDateModule,
     MatTableModule,
     MatPaginatorModule,
   ],
+  providers: [MatDatepickerModule, MatNativeDateModule],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss',
 })

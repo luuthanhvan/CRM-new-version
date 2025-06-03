@@ -25,9 +25,7 @@ class SalesOrderController {
   getListOfSalesOrders(req, res) {
     try {
       logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_SALES_ORDER);
-      const isAdmin = req.isAdmin,
-        name = req.name;
-      const query = isAdmin ? {} : { assignedTo: name };
+      const query = req.isAdmin ? {} : { _id: req.userId };
       SalesOrder.find(query).then((data) => {
         const resData = data.length > 0 ? mutipleMongooseToObject(data) : [];
         logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_SALES_ORDER_SUCCESS);
@@ -85,7 +83,7 @@ class SalesOrderController {
     try {
       logger.info(RESPONSE_MESSAGE.DELETING_SALES_ORDER);
       const saleOrderId = req.params.id;
-      SalesOrder.remove({ _id: saleOrderId }).then(() => {
+      SalesOrder.deleteOne({ _id: saleOrderId }).then(() => {
         logger.info(RESPONSE_MESSAGE.DELETING_SALES_ORDER_SUCCESS);
         return apiResponse.successResponse(
           res,
@@ -102,7 +100,7 @@ class SalesOrderController {
     try {
       logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDER);
       const salesOrderIds = req.body;
-      SalesOrder.remove({ _id: { $in: salesOrderIds } }).then(() => {
+      SalesOrder.deleteMany({ _id: { $in: salesOrderIds } }).then(() => {
         logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDER_SUCCESS);
         return apiResponse.successResponse(
           res,

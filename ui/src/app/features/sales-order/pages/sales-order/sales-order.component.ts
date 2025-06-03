@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,13 +12,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
-import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, BehaviorSubject, of, combineLatest } from 'rxjs';
 import {
@@ -29,24 +25,13 @@ import {
   debounceTime,
   startWith,
 } from 'rxjs/operators';
-import type { User } from '~features/user/types/user.type';
-import { AuthService } from '~features/authentication/services/auth.service';
-import { DateRangeValidator } from '~core/validators/common.validator';
-import { SalesOrder } from '~features/sales-order/types/sales-order.type';
 import { SalesOrderService } from '~features/sales-order/services/sales-order.service';
-import { UserService } from '~features/user/services/user.service';
 import { ToastService } from '~core/services/toast.service';
 import moment from 'moment';
-
-interface FilterCriteria {
-  status?: string;
-  assignedTo?: string;
-  contactName?: string;
-  createdTimeFrom?: any;
-  createdTimeTo?: any;
-  updatedTimeFrom?: any;
-  updatedTimeTo?: any;
-}
+import { SalesOrderFilterGroupDialogComponent } from '~features/sales-order/components/sales-order-filter-group-dialog/sales-order-filter-group-dialog.component';
+import { SalesOrderFormComponent } from '~features/sales-order/components/sales-order-form/sales-order-form.component';
+import { DialogComponent } from '~core/components/dialog/dialog.component';
+import { SalesOrder } from '~features/sales-order/types/sales-order.type';
 
 @Component({
   selector: 'app-sales-order',
@@ -65,12 +50,14 @@ interface FilterCriteria {
     MatTableModule,
     MatCardModule,
     MatSelectModule,
+    MatPaginatorModule,
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   templateUrl: './sales-order.component.html',
   styleUrl: './sales-order.component.scss',
 })
-export class SalesOrderComponent {
+export class SalesOrderComponent implements OnInit {
+  @ViewChild(MatPaginator) salesOrderPaginator!: MatPaginator;
   displayedColumns: string[] = [
     'check',
     'subject',
@@ -80,44 +67,23 @@ export class SalesOrderComponent {
     'assignedTo',
     'createdTime',
     'updatedTime',
-    'modify',
-    'delete',
+    'actions',
   ];
   statusNames: string[] = ['Created', 'Approved', 'Delivered', 'Canceled'];
   statusFromDashboard!: string;
-
-  createdTimeForm!: FormGroup;
-  updatedTimeForm!: FormGroup;
-  // status form controls will used for autofill when user click on sales order chart
-  // so it need to be globally assigned a value
-  status: FormControl = new FormControl('');
-  searchText!: FormControl;
-  contactName!: FormControl;
-  assignedTo!: FormControl;
-
-  user$!: Observable<User>;
-  assignedToUsers$!: Observable<User[]>;
-  salesOrders$!: Observable<SalesOrder[]>;
-  search$!: Observable<SalesOrder[]>;
-  result$!: Observable<SalesOrder[]>;
-  filterSubject: BehaviorSubject<FilterCriteria> =
-    new BehaviorSubject<FilterCriteria>({});
-
   checkArray: string[] = [];
   isDisabled: boolean = true; // it used to show/hide the mass delete button
   submitted: boolean = false;
   show: boolean = true;
-  dataSource: any[] = [];
+  dataSource = new MatTableDataSource<SalesOrder>([]);
+  totalRecords: number = 0;
 
   constructor(
     private router: Router,
     protected salesOrderService: SalesOrderService,
-    private formBuilder: FormBuilder,
     public dialog: MatDialog,
     private route: ActivatedRoute,
-    private toastService: ToastService,
-    private userService: UserService,
-    private authService: AuthService
+    private toastService: ToastService
   ) {
     // clear params (status) before get all data
     this.router.navigateByUrl('/sales-order');
@@ -125,174 +91,146 @@ export class SalesOrderComponent {
     this.route.queryParams.subscribe((params) => {
       if (params['status']) {
         this.statusFromDashboard = params['status'];
-        this.status = new FormControl(this.statusFromDashboard);
-        this.applySelectFilter(this.status.value, 'status');
+        // this.status = new FormControl(this.statusFromDashboard);
+        // this.applySelectFilter(this.status.value, 'status');
       }
     });
   }
 
   ngOnInit() {
-    this.init();
-
-    // init created time and updated time form groups
-    this.createdTimeForm = this.formBuilder.group(
-      {
-        createdTimeFrom: new FormControl(Validators.required),
-        createdTimeTo: new FormControl(Validators.required),
-      },
-      { validators: DateRangeValidator('createdTimeFrom', 'createdTimeTo') }
-    );
-
-    this.updatedTimeForm = this.formBuilder.group(
-      {
-        updatedTimeFrom: new FormControl(Validators.required),
-        updatedTimeTo: new FormControl(Validators.required),
-      },
-      { validators: DateRangeValidator('updatedTimeFrom', 'updatedTimeTo') }
-    );
+    this.loadData();
   }
 
-  init() {
-    this.searchText = new FormControl('');
-    this.assignedTo = new FormControl('');
-
-    this.assignedToUsers$ = this.userService.getListOfUsers().pipe(
-      tap((data) => {
-        if (data.length === 1) {
-          this.show = false;
-        }
-      })
-    );
-
-    this.search$ = this.searchText.valueChanges.pipe(
-      startWith(''),
-      tap((contactName) => {
-        // do something if the search keyword need to be handle before passed it to next stage
-      }),
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((contactName) =>
-        contactName
-          ? this.salesOrderService.searchSalesOrder(contactName)
-          : of(null)
-      ),
-      map((res) => res && res['data'])
-    );
-
-    combineLatest([
-      this.salesOrderService.getListOfSalesOrder(),
-      this.filterSubject,
-      this.search$,
-    ])
-      .pipe(
-        map(
-          ([
-            salesOrder,
-            {
-              status,
-              assignedTo,
-              contactName,
-              createdTimeFrom,
-              createdTimeTo,
-              updatedTimeFrom,
-              updatedTimeTo,
-            },
-            searchResult,
-          ]) => {
-            const sourceData = searchResult ? searchResult : salesOrder;
-            return sourceData.filter((d) => {
-              return (
-                (status ? d.status === status : true) &&
-                (assignedTo ? d.assignedTo === assignedTo : true) &&
-                (createdTimeFrom
-                  ? moment(d.createdTime).isBefore(createdTimeFrom)
-                  : true) &&
-                (createdTimeTo
-                  ? moment(d.createdTime).isAfter(createdTimeTo)
-                  : true) &&
-                (updatedTimeFrom
-                  ? moment(d.updatedTime).isBefore(updatedTimeFrom)
-                  : true) &&
-                (updatedTimeTo
-                  ? moment(d.updatedTime).isAfter(updatedTimeTo)
-                  : true)
-              );
-            });
-          }
-        )
-      )
-      .subscribe((data) => {
-        this.dataSource = data;
-      });
+  loadData() {
+    const currentUserInfo = window.localStorage.getItem('currentUser');
+    if (currentUserInfo) {
+      const parsedUserInfo = JSON.parse(currentUserInfo);
+      const reqParams = [
+        {
+          paramName: 'isAdmin',
+          paramVal: parsedUserInfo.isAdmin,
+        },
+        {
+          paramName: 'userId',
+          paramVal: parsedUserInfo._id,
+        },
+      ];
+      this.salesOrderService
+        .getListOfSalesOrder(reqParams)
+        .subscribe((data) => {
+          this.totalRecords = data.length;
+          this.dataSource = new MatTableDataSource(data);
+          this.dataSource.paginator = this.salesOrderPaginator;
+        });
+      //   this.salesOrderService.getListOfSalesOrder(reqParams),
+      //   this.filterSubject,
+      //   this.search$,
+      // ])
+      //   .pipe(
+      //     map(
+      //       ([
+      //         salesOrder,
+      //         {
+      //           status,
+      //           assignedTo,
+      //           contactName,
+      //           createdTimeFrom,
+      //           createdTimeTo,
+      //           updatedTimeFrom,
+      //           updatedTimeTo,
+      //         },
+      //         searchResult,
+      //       ]) => {
+      //         const sourceData = searchResult ? searchResult : salesOrder;
+      //         return sourceData.filter((d) => {
+      //           return (
+      //             (status ? d.status === status : true) &&
+      //             (assignedTo ? d.assignedTo === assignedTo : true) &&
+      //             (createdTimeFrom
+      //               ? moment(d.createdTime).isBefore(createdTimeFrom)
+      //               : true) &&
+      //             (createdTimeTo
+      //               ? moment(d.createdTime).isAfter(createdTimeTo)
+      //               : true) &&
+      //             (updatedTimeFrom
+      //               ? moment(d.updatedTime).isBefore(updatedTimeFrom)
+      //               : true) &&
+      //             (updatedTimeTo
+      //               ? moment(d.updatedTime).isAfter(updatedTimeTo)
+      //               : true)
+      //           );
+      //         });
+      //       }
+      //     )
+      //   )
+      //   .subscribe((data) => {
+      //     this.dataSource = data;
+      //   });
+    }
   }
 
-  // function to reset the table
   reset() {
-    this.filterSubject.next({});
-    this.init();
-    this.status = new FormControl('');
-    // reset form groups
-    this.createdTimeForm.reset();
-    this.updatedTimeForm.reset();
+    this.loadData();
   }
 
-  // navigate to the edit sale order page
-  navigateToEdit(saleOrderId: string) {
-    // let navigationExtras: NavigationExtras = {
-    //   queryParams: { id: saleOrderId },
-    // };
-    // this.router.navigate(['/sales_order/edit'], navigationExtras);
+  openFilterGroupDialog() {
+    const filterDialogRef = this.dialog.open(
+      SalesOrderFilterGroupDialogComponent,
+      {
+        disableClose: true,
+        width: '600px',
+      }
+    );
+    filterDialogRef.afterClosed().subscribe((result) => {});
   }
 
-  applySelectFilter(filterValue: string, filterBy: string) {
-    const currentFilterObj = this.filterSubject.getValue();
-    this.filterSubject.next({ ...currentFilterObj, [filterBy]: filterValue });
+  openFormDialog(action: string, orderId?: string) {
+    const formDialogRef = this.dialog.open(SalesOrderFormComponent, {
+      disableClose: true,
+      width: '1200px',
+      data: {
+        action,
+        orderId,
+      },
+    });
+    formDialogRef.afterClosed().subscribe((result) => {
+      this.loadData();
+    });
   }
 
-  applyDateFilter(dateForm: FormGroup, filterBy: string) {
-    this.submitted = true;
-    const date = dateForm.value;
-    const currentFilterObj = this.filterSubject.getValue();
-
-    if (filterBy == 'createdTime') {
-      const dateFrom = moment(date.createdTimeFrom).format('mm/dd/yyyy');
-      const dateTo = moment(date.createdTimeTo).format('mm/dd/yyyy');
-      this.filterSubject.next({
-        ...currentFilterObj,
-        ['createdTimeFrom']: dateFrom,
-        ['createdTimeTo']: dateTo,
-      });
-    }
-    if (filterBy == 'updatedTime') {
-      const dateFrom = moment(date.updatedTimeFrom).format('mm/dd/yyyy');
-      const dateTo = moment(date.updatedTimeTo).format('mm/dd/yyyy');
-      this.filterSubject.next({
-        ...currentFilterObj,
-        ['updatedTimeFrom']: dateFrom,
-        ['updatedTimeTo']: dateTo,
-      });
-    }
+  onDelete(orderId: string, subject: string) {
+    const confirmDialogRef = this.dialog.open(DialogComponent, {
+      disableClose: false,
+    });
+    confirmDialogRef.componentInstance.content = `You want to delete the "${subject}"?`;
+    confirmDialogRef.componentInstance.sendingSubmitSignal.subscribe(
+      (signal) => {
+        if (signal) {
+          this.salesOrderService
+            .deleteSalesOrder(
+              orderId,
+              [],
+              [{ name: 'skipLoading', value: 'true' }]
+            )
+            .pipe(
+              tap((res) => {
+                if (res['status'] === 1) {
+                  this.toastService.showSuccessMessage(
+                    'Delete the Sales order!'
+                  );
+                } else {
+                  this.toastService.showErrorMessage('Delete the Sales order!');
+                }
+              })
+            )
+            .subscribe(() => {
+              confirmDialogRef.close();
+            });
+        }
+      }
+    );
+    confirmDialogRef.afterClosed().subscribe((result) => {
+      this.loadData();
+    });
   }
-
-  onDelete(saleOrderId: string, sub: string) {}
-
-  onCheckboxClicked(e: any) {
-    this.isDisabled = false; // enable the Delete button
-    if (e.target.checked) {
-      // add the checked value to array
-      this.checkArray.push(e.target.value);
-    } else {
-      // remove the unchecked value from array
-      this.checkArray.splice(this.checkArray.indexOf(e.target.value), 1);
-    }
-
-    // if there is no value in checkArray then disable the Delete button
-    if (this.checkArray.length == 0) {
-      this.isDisabled = true;
-    }
-  }
-
-  onMassDeleteBtnClicked() {}
-
-  onClickedRow(salesOrderId: string) {}
 }

@@ -4,7 +4,7 @@
       <h2 class="float-start" id="contacts-heading">
         {{ "shared.salesOrder" | translate }}
       </h2>
-      <form class="float-end">
+      <!-- <form class="float-end">
         <button
           mat-button
           (click)="applySelectFilter(searchText.value, 'contactName')"
@@ -21,180 +21,7 @@
         <button mat-button (click)="reset()">
           <mat-icon>clear</mat-icon>
         </button>
-      </form>
-    </div>
-    <div class="col-12 my-3" id="sales-order-filter-wrapper">
-      <mat-card class="sales-order-filters-card">
-        <mat-card-header>
-          <mat-card-title>
-            <h3>Filter group</h3>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="filter-group row justify-content-center mx-2 my-4">
-            <div class="selected-filters col-4">
-              <p class="text-bold">Selected filters</p>
-              <div class="row">
-                <div class="col-md-12 col-lg-auto">
-                  <mat-form-field appearance="outline" class="selectFilter">
-                    <mat-label>{{ "salesOrder.status" | translate }}</mat-label>
-                    <mat-select
-                      (selectionChange)="
-                        applySelectFilter($event['value'], 'status')
-                      "
-                      [formControl]="status"
-                    >
-                      <mat-option *ngFor="let stt of statusNames" [value]="stt">
-                        {{ stt }}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-12 col-lg-auto">
-                  <mat-form-field
-                    appearance="outline"
-                    class="selectFilter"
-                    *ngIf="show"
-                  >
-                    <mat-label>{{ "shared.assignedTo" | translate }}</mat-label>
-                    <mat-select
-                      [formControl]="assignedTo"
-                      (selectionChange)="
-                        applySelectFilter($event['value'], 'assignedTo')
-                      "
-                    >
-                      <mat-option
-                        *ngFor="let user of assignedToUsers$ | async"
-                        [value]="user.name"
-                        >{{ user.name }}</mat-option
-                      >
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-              </div>
-            </div>
-            <div class="created-time-date-range col-4">
-              <p class="text-bold">{{ "date.createdTime" | translate }}</p>
-              <form
-                [formGroup]="createdTimeForm"
-                (ngSubmit)="applyDateFilter(createdTimeForm, 'createdTime')"
-              >
-                <div class="row">
-                  <div class="col-md-12 col-lg-auto">
-                    <mat-form-field appearance="outline">
-                      <mat-label>{{ "date.from" | translate }}</mat-label>
-                      <input
-                        matInput
-                        [matDatepicker]="createdTimeFromPicker"
-                        formControlName="createdTimeFrom"
-                      />
-                      <mat-datepicker-toggle
-                        matSuffix
-                        [for]="createdTimeFromPicker"
-                      ></mat-datepicker-toggle>
-                      <mat-datepicker #createdTimeFromPicker></mat-datepicker>
-                      @if (createdTimeForm.controls['createdTimeFrom'].errors?.['restrict']) {
-                        <mat-error>
-                          From field must be less than To field
-                        </mat-error>
-                      }
-                    </mat-form-field>
-                  </div>
-                  <div class="col-md-12 col-lg-auto">
-                    <mat-form-field appearance="outline">
-                      <mat-label>{{ "date.to" | translate }}</mat-label>
-                      <input
-                        matInput
-                        [matDatepicker]="createdTimeToPicker"
-                        formControlName="createdTimeTo"
-                      />
-                      <mat-datepicker-toggle
-                        matSuffix
-                        [for]="createdTimeToPicker"
-                      ></mat-datepicker-toggle>
-                      <mat-datepicker #createdTimeToPicker></mat-datepicker>
-                    </mat-form-field>
-                  </div>
-                  <div class="mt-2 p-0">
-                    <button
-                      [ngClass]="
-                        createdTimeForm.invalid ? 'btn-disabled' : 'btn-grey'
-                      "
-                      mat-button
-                      type="submit"
-                      [disabled]="createdTimeForm.invalid"
-                    >
-                      <span>{{ "action.apply" | translate }}</span>
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div class="updated-time-date-range col-4">
-              <p class="text-bold">{{ "date.updatedTime" | translate }}</p>
-              <form
-                [formGroup]="updatedTimeForm"
-                (ngSubmit)="applyDateFilter(updatedTimeForm, 'updatedTime')"
-              >
-                <div class="row">
-                  <div class="col-md-12 col-lg-auto">
-                    <mat-form-field appearance="outline">
-                      <mat-label>{{ "date.from" | translate }}</mat-label>
-                      <input
-                        matInput
-                        [matDatepicker]="updatedTimeFromPicker"
-                        formControlName="updatedTimeFrom"
-                      />
-                      <mat-datepicker-toggle
-                        matSuffix
-                        [for]="updatedTimeFromPicker"
-                      ></mat-datepicker-toggle>
-                      <mat-datepicker #updatedTimeFromPicker></mat-datepicker>
-                      @if (updatedTimeForm.controls['updatedTimeFrom'].errors?.['restrict']) {
-                        <mat-error>
-                          From field must be less than To field
-                        </mat-error>
-                      }
-                    </mat-form-field>
-                  </div>
-                  <div class="col-md-12 col-lg-auto">
-                    <mat-form-field appearance="outline">
-                      <mat-label>{{ "date.to" | translate }}</mat-label>
-                      <input
-                        matInput
-                        [matDatepicker]="updatedTimeToPicker"
-                        formControlName="updatedTimeTo"
-                      />
-                      <mat-datepicker-toggle
-                        matSuffix
-                        [for]="updatedTimeToPicker"
-                      ></mat-datepicker-toggle>
-                      <mat-datepicker #updatedTimeToPicker></mat-datepicker>
-                    </mat-form-field>
-                  </div>
-                  <div class="mt-2 p-0">
-                    <button
-                      [ngClass]="
-                        updatedTimeForm.invalid ? 'btn-disabled' : 'btn-grey'
-                      "
-                      mat-button
-                      type="submit"
-                      [disabled]="updatedTimeForm.invalid"
-                    >
-                      {{ "action.apply" | translate }}
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </mat-card-content>
-        <mat-card-actions>
-          <button class="btn-grey" mat-button (click)="reset()">
-            Reset all
-          </button>
-        </mat-card-actions>
-      </mat-card>
+      </form> -->
     </div>
     <div class="col-12 my-3">
       <h3 class="float-start my-1">List of Sales order</h3>
@@ -206,14 +33,17 @@
           mat-button
           [ngClass]="isDisabled ? 'btn-disabled' : 'btn-danger'"
           [disabled]="isDisabled"
-          (click)="onMassDeleteBtnClicked()"
         >
           <mat-icon>delete</mat-icon>
           <span>{{ "action.delete" | translate }}</span>
         </button>
-        <button mat-button class="btn-primary">
+        <!-- <button mat-button class="btn-tertiary" (click)="openFilterGroupDialog()">
+          <mat-icon>filter_alt</mat-icon>
+          <span>Filters</span>
+        </button> -->
+        <button mat-button class="btn-primary" (click)="openFormDialog('add')">
           <mat-icon>add</mat-icon>
-          <span>{{ "salesOrder.createNewSalesOrder" | translate }}</span>
+          <span>Create new Sales order</span>
         </button>
       </div>
     </div>
@@ -224,34 +54,22 @@
         [dataSource]="dataSource"
         class="mat-elevation-z8"
       >
-        <!-- Checkbox column -->
         <ng-container matColumnDef="check">
           <th mat-header-cell *matHeaderCellDef></th>
           <td class="text-center" mat-cell *matCellDef="let element">
-            <input
-              type="checkbox"
-              [value]="element._id"
-              (change)="onCheckboxClicked($event)"
-            />
+            <input type="checkbox" [value]="element._id" />
           </td>
         </ng-container>
 
-        <!-- Subject Column -->
         <ng-container matColumnDef="subject">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
             {{ "salesOrder.subject" | translate }}
           </th>
-          <td
-            class="text-center pointer"
-            mat-cell
-            *matCellDef="let element"
-            (click)="onClickedRow(element._id)"
-          >
+          <td class="text-center pointer" mat-cell *matCellDef="let element">
             {{ element.subject }}
           </td>
         </ng-container>
 
-        <!-- Contact name Column -->
         <ng-container matColumnDef="contactName">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
             {{ "shared.name" | translate }}
@@ -261,7 +79,6 @@
           </td>
         </ng-container>
 
-        <!-- Status Column -->
         <ng-container matColumnDef="status">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
             {{ "salesOrder.status" | translate }}
@@ -271,7 +88,6 @@
           </td>
         </ng-container>
 
-        <!-- Total Column -->
         <ng-container matColumnDef="total">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
             {{ "salesOrder.total" | translate }}
@@ -281,7 +97,6 @@
           </td>
         </ng-container>
 
-        <!-- Assigned to Column -->
         <ng-container matColumnDef="assignedTo">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
             {{ "shared.assignedTo" | translate }}
@@ -291,7 +106,6 @@
           </td>
         </ng-container>
 
-        <!-- Created time Column -->
         <ng-container matColumnDef="createdTime">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
             {{ "date.createdTime" | translate }}
@@ -301,7 +115,6 @@
           </td>
         </ng-container>
 
-        <!-- Updated time Column -->
         <ng-container matColumnDef="updatedTime">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
             {{ "date.updatedTime" | translate }}
@@ -311,27 +124,23 @@
           </td>
         </ng-container>
 
-        <!-- Modify contact infomation column -->
-        <ng-container matColumnDef="modify">
+        <ng-container matColumnDef="actions">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "action.modify" | translate }}
+            {{ "action.actions" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
-            <button mat-button (click)="navigateToEdit(element._id)">
-              <mat-icon class="text-warning pointer">edit</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-        <!-- Delete contact infomation column -->
-        <ng-container matColumnDef="delete">
-          <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "action.delete" | translate }}
-          </th>
-          <td class="text-center" mat-cell *matCellDef="let element">
-            <button mat-button (click)="onDelete(element._id, element.subject)">
-              <mat-icon class="text-danger pointer">delete</mat-icon>
-            </button>
+            <mat-icon
+              class="text-warning pointer mx-1"
+              (click)="openFormDialog('edit', element._id)"
+            >
+              edit
+            </mat-icon>
+            <mat-icon
+              class="text-danger pointer mx-1"
+              (click)="onDelete(element._id, element.subject)"
+            >
+              delete
+            </mat-icon>
           </td>
         </ng-container>
 
@@ -339,5 +148,11 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
+    <mat-paginator
+      #salesOrderPaginator
+      [length]="totalRecords"
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 20, 30, 40, 50]"
+    ></mat-paginator>
   </div>
 </div>

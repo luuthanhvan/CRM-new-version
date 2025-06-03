@@ -60,7 +60,8 @@
     "changePassword": "Change password",
     "signout": "Sign-out",
     "language": "Language",
-    "search": "Enter contact name"
+    "search": "Enter contact name",
+    "actions": "Actions"
   },
   "date": {
     "createdTime": "Created time",

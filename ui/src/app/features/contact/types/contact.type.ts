@@ -9,9 +9,9 @@ export type Contact = {
   dob: string;
   leadSrc: string;
   assignedTo: string;
-  creator: string;
+  creator?: string;
   address: string;
   description: string;
-  createdTime?: string;
-  updatedTime?: string;
+  createdTime?: Date;
+  updatedTime?: Date;
 };

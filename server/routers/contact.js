@@ -4,17 +4,25 @@ const contactsController = require("../controllers/ContactsController");
 const authController = require("../controllers/AuthController");
 const jwtHelper = require("../configs/jwt");
 
-router.post("/", contactsController.storeContact);
-router.post(
+router.post("/", jwtHelper.verifyJwtToken, contactsController.storeContact);
+router.get(
   "/list",
   jwtHelper.verifyJwtToken,
   authController.verifyUser,
   contactsController.getListOfContacts
 );
-router.get("/:id", contactsController.getContact);
-router.put("/:id", contactsController.updateContact);
-router.delete("/:id", contactsController.deleteContact);
-router.post("/delete", contactsController.multiDeleteContact);
+router.get("/:id", jwtHelper.verifyJwtToken, contactsController.getContact);
+router.put("/:id", jwtHelper.verifyJwtToken, contactsController.updateContact);
+router.delete(
+  "/:id",
+  jwtHelper.verifyJwtToken,
+  contactsController.deleteContact
+);
+router.post(
+  "/delete",
+  jwtHelper.verifyJwtToken,
+  contactsController.multiDeleteContact
+);
 router.get("/search/:contactName", contactsController.findContact);
 
 module.exports = router;

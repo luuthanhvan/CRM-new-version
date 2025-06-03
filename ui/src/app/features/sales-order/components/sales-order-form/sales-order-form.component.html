@@ -1,0 +1,97 @@
+<div id="sales-order-form-wrapper">
+  <h2 mat-dialog-title>
+    {{
+      this.data.action === "add"
+        ? "Create new Sales order"
+        : "Edit the Sales Order"
+    }}
+  </h2>
+  <mat-dialog-content>
+    <form class="mx-3 my-4" [formGroup]="salesOrderForm">
+      <div class="row">
+        <mat-form-field class="col-8" appearance="outline">
+          <mat-label>Subject</mat-label>
+          <input matInput formControlName="subject" />
+          @if (salesOrderForm.controls['subject'].errors?.['required']) {
+          <mat-error>*Subject is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field class="col-4" appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option *ngFor="let stt of statusNames" [value]="stt">
+              {{ stt }}
+            </mat-option>
+          </mat-select>
+          @if (salesOrderForm.controls['status'].errors?.['required']) {
+          <mat-error>*Status is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="row my-3">
+        <mat-form-field class="col-4" appearance="outline">
+          <mat-label>Contact name</mat-label>
+          <mat-select formControlName="contactName">
+            <mat-option
+              *ngFor="let contact of contacts"
+              [value]="contact.contactName"
+            >
+              {{ contact.contactName }}
+            </mat-option>
+          </mat-select>
+          @if (salesOrderForm.controls['contactName'].errors?.['required']) {
+          <mat-error>*Contact name is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field
+          class="col-4"
+          appearance="outline"
+          *ngIf="assignedToUsers && assignedToUsers.length > 0"
+        >
+          <mat-label>Assigned to</mat-label>
+          <mat-select formControlName="assignedTo">
+            <mat-option
+              *ngFor="let user of assignedToUsers"
+              [value]="user.name"
+            >
+              {{ user.name }}
+            </mat-option>
+          </mat-select>
+          @if (salesOrderForm.controls['assignedTo'].errors?.['required']) {
+          <mat-error>*Assigned to is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field class="col-4" appearance="outline">
+          <mat-label>Total</mat-label>
+          <input matInput formControlName="total" />
+          @if (salesOrderForm.controls['total'].errors?.['required']) {
+          <mat-error>*Total is required</mat-error>
+          } @if (salesOrderForm.controls['total'].errors?.['pattern']) {
+          <mat-error>*Total must be a number</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="row my-3">
+        <mat-form-field appearance="outline" class="col-12">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>
+      {{ "action.cancel" | translate }}
+    </button>
+    <button
+      mat-button
+      cdkFocusInitial
+      (click)="!salesOrderForm.invalid && onSubmit()"
+      [ngClass]="salesOrderForm.invalid ? 'btn-disabled' : 'btn-primary'"
+    >
+      {{ "action.submit" | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

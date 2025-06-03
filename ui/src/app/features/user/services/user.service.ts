@@ -13,25 +13,39 @@ export class UserService {
   private readonly endpointService = inject(EndpointService);
   private stop$: Subject<void> = new Subject<void>();
 
-  addNewUser(data: User, paramsArr?: any[]): Observable<any> {
+  addNewUser(
+    data: User,
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<any> {
     return this.endpointService.addEndpoint(
       this.endpoints.user.v1.user,
       paramsArr || [],
-      data
+      data,
+      headerOptions
     );
   }
 
-  createUser(data: User, paramsArr?: any[]): Observable<any> {
+  createUser(
+    data: User,
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<any> {
     return this.endpointService.addEndpoint(
       this.endpoints.user.v1.createUser,
       paramsArr || [],
-      data
+      data,
+      headerOptions
     );
   }
 
-  getListOfUsers(paramsArr?: any[]): Observable<User[]> {
+  getListOfUsers(paramsArr?: any[], headerOptions?: any[]): Observable<User[]> {
     return this.endpointService
-      .fetchEndpoint(this.endpoints.user.v1.userList, paramsArr || [])
+      .fetchEndpoint(
+        this.endpoints.user.v1.userList,
+        paramsArr || [],
+        headerOptions
+      )
       .pipe(
         map((res) => res['data']),
         takeUntil(this.stop$),
@@ -39,8 +53,11 @@ export class UserService {
       );
   }
 
-  getUser(userId: string, paramsArr?: any[]): Observable<User> {
-    const headerOptions = [{ name: 'skipLoading', value: 'true' }];
+  getUser(
+    userId: string,
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<User> {
     return this.endpointService
       .fetchEndpoint(
         `${this.endpoints.user.v1.user}/${userId}`,
@@ -56,9 +73,9 @@ export class UserService {
   updateUser(
     userId: string,
     userInfo: User,
-    paramsArr?: any[]
+    paramsArr?: any[],
+    headerOptions?: any[]
   ): Observable<any> {
-    const headerOptions = [{ name: 'skipLoading', value: 'true' }];
     return this.endpointService
       .updateEndpoint(
         `${this.endpoints.user.v1.user}/${userId}`,
@@ -72,13 +89,15 @@ export class UserService {
   changePassword(
     userId: string,
     newPass: string,
-    paramsArr?: any[]
+    paramsArr?: any[],
+    headerOptions?: any[]
   ): Observable<void> {
     return this.endpointService
       .addEndpoint(
         `${this.endpoints.user.v1.user}/${userId}`,
         paramsArr || [],
-        { newPass }
+        { newPass },
+        headerOptions
       )
       .pipe(takeUntil(this.stop$));
   }

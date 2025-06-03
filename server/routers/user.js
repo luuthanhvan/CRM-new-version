@@ -5,7 +5,7 @@ const authController = require("../controllers/AuthController");
 const jwtHelper = require("../configs/jwt");
 
 router.get("/", jwtHelper.verifyJwtToken, userController.userProfile);
-router.post("/create", userController.createNewUser);
+router.post("/create", jwtHelper.verifyJwtToken, userController.createNewUser);
 router.get(
   "/list",
   jwtHelper.verifyJwtToken,

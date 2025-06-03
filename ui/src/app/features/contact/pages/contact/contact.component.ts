@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,13 +12,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
-import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, BehaviorSubject, of, combineLatest } from 'rxjs';
 import {
@@ -29,24 +25,12 @@ import {
   debounceTime,
   startWith,
 } from 'rxjs/operators';
-import type { User } from '~features/user/types/user.type';
-import { AuthService } from '~features/authentication/services/auth.service';
-import { DateRangeValidator } from '~core/validators/common.validator';
-import { UserService } from '~features/user/services/user.service';
 import { ToastService } from '~core/services/toast.service';
 import { ContactService } from '~features/contact/services/contact.service';
 import type { Contact } from '~features/contact/types/contact.type';
 import moment from 'moment';
-
-interface FilterCriteria {
-  leadSrc?: string;
-  assignedTo?: string;
-  contactName?: string;
-  createdTimeFrom?: any;
-  createdTimeTo?: any;
-  updatedTimeFrom?: any;
-  updatedTimeTo?: any;
-}
+import { ContactFormComponent } from '~features/contact/components/contact-form/contact-form.component';
+import { DialogComponent } from '~core/components/dialog/dialog.component';
 
 @Component({
   selector: 'app-contact',
@@ -65,12 +49,14 @@ interface FilterCriteria {
     MatNativeDateModule,
     MatTableModule,
     MatSelectModule,
+    MatPaginatorModule,
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
 })
 export class ContactComponent implements OnInit {
+  @ViewChild(MatPaginator) contactPaginator!: MatPaginator;
   displayedColumns: string[] = [
     'check',
     'contactName',
@@ -79,8 +65,7 @@ export class ContactComponent implements OnInit {
     'assignedTo',
     'createdTime',
     'updatedTime',
-    'modify',
-    'delete',
+    'actions',
   ];
 
   leadSources: string[] = [
@@ -91,40 +76,16 @@ export class ContactComponent implements OnInit {
     'Word of mouth',
     'Other',
   ];
-  leadSrcFromDashboard!: string;
-  assignedFromDashboard!: string;
-
-  // leadSrc and assignedTo form controls will used for autofill when user click on contact chart or table
-  // so it need to be globally assigned a value
-  assignedTo: FormControl = new FormControl();
-  leadSrc: FormControl = new FormControl();
-  searchText!: FormControl;
-  createdTimeForm!: FormGroup;
-  updatedTimeForm!: FormGroup;
-
-  checkArray: string[] = [];
-  isDisabled: boolean = true; // it used to show/hide the mass delete button
-  submitted: boolean = false;
-  show: boolean = true;
-
-  user$!: Observable<User>;
-  assignedToUsers$!: Observable<User[]>;
-  contacts$!: Observable<Contact[]>;
-  result$!: Observable<Contact[]>;
-  search$!: Observable<Contact[]>;
-  filterSubject: BehaviorSubject<FilterCriteria> =
-    new BehaviorSubject<FilterCriteria>({});
-
-  dataSource: any[] = [];
+  isDisabled: boolean = true;
+  dataSource = new MatTableDataSource<Contact>([]);
+  totalRecords: number = 0;
 
   constructor(
     private router: Router,
     protected contactService: ContactService,
     public dialog: MatDialog,
-    private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private authService: AuthService,
-    private userService: UserService
+    private toastService: ToastService
   ) {
     // clear params (leadSrc or assignedTo) before get all data
     this.router.navigateByUrl('/contact');
@@ -132,164 +93,88 @@ export class ContactComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       if (params) {
         if (params['leadSrc']) {
-          this.leadSrcFromDashboard = params['leadSrc'];
-          this.leadSrc = new FormControl(this.leadSrcFromDashboard);
-          this.applySelectFilter(this.leadSrc.value, 'leadSrc');
+          // this.leadSrcFromDashboard = params['leadSrc'];
+          // this.leadSrc = new FormControl(this.leadSrcFromDashboard);
         }
         if (params['assignedTo']) {
-          this.assignedFromDashboard = params['assignedTo'];
-          this.assignedTo = new FormControl(this.assignedFromDashboard);
-          this.applySelectFilter(this.assignedTo.value, 'assignedTo');
+          // this.assignedFromDashboard = params['assignedTo'];
+          // this.assignedTo = new FormControl(this.assignedFromDashboard);
         }
       }
     });
   }
 
   ngOnInit(): void {
-    this.initData();
-
-    // init created time and updated time form groups
-    this.createdTimeForm = this.formBuilder.group(
-      {
-        createdTimeFrom: new FormControl(Validators.required),
-        createdTimeTo: new FormControl(Validators.required),
-      },
-      { validators: DateRangeValidator('createdTimeFrom', 'createdTimeTo') }
-    );
-
-    this.updatedTimeForm = this.formBuilder.group(
-      {
-        updatedTimeFrom: new FormControl(Validators.required),
-        updatedTimeTo: new FormControl(Validators.required),
-      },
-      { validators: DateRangeValidator('updatedTimeFrom', 'updatedTimeTo') }
-    );
+    this.loadData();
   }
 
-  initData() {
-    this.searchText = new FormControl();
+  loadData() {
+    const currentUserInfo = window.localStorage.getItem('currentUser');
+    if (currentUserInfo) {
+      const parsedUserInfo = JSON.parse(currentUserInfo);
+      const reqParams = [
+        {
+          paramName: 'isAdmin',
+          paramVal: parsedUserInfo.isAdmin,
+        },
+        {
+          paramName: 'userId',
+          paramVal: parsedUserInfo._id,
+        },
+      ];
+      this.contactService.getListOfContacts(reqParams).subscribe((data) => {
+          this.totalRecords = data.length;
+          this.dataSource = new MatTableDataSource(data);
+          this.dataSource.paginator = this.contactPaginator;
+      });
+    }
+  }
 
-    this.assignedToUsers$ = this.userService.getListOfUsers().pipe(
-      tap((data) => {
-        if (data.length == 1) {
-          this.show = false;
-        }
-      })
-    );
+  openFormDialog(action: string, contactId?: string) {
+    const formDialogRef = this.dialog.open(ContactFormComponent, {
+      disableClose: true,
+      width: '1200px',
+      data: {
+        action,
+        contactId,
+      },
+    });
+    formDialogRef.afterClosed().subscribe((result) => {
+      this.loadData();
+    });
+  }
 
-    this.search$ = this.searchText.valueChanges.pipe(
-      startWith(''),
-      tap((contactName) => {
-        console.log(contactName);
-      }),
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((contactName) =>
-        contactName ? this.contactService.searchContacts(contactName) : of(null)
-      ),
-      map((res) => res && res['data'])
-    );
-
-    combineLatest([
-      this.contactService.getListOfContacts(),
-      this.filterSubject,
-      this.search$,
-    ])
-      .pipe(
-        map(
-          ([
-            contacts,
-            {
-              leadSrc,
-              assignedTo,
-              contactName,
-              createdTimeFrom,
-              createdTimeTo,
-              updatedTimeFrom,
-              updatedTimeTo,
-            },
-            searchResult,
-          ]) => {
-            const sourceData = searchResult ? searchResult : contacts;
-            return sourceData.filter((d) => {
-              return (
-                (leadSrc ? d.leadSrc === leadSrc : true) &&
-                (assignedTo ? d.assignedTo === assignedTo : true) &&
-                (createdTimeFrom
-                  ? moment(d.createdTime).isBefore(createdTimeFrom)
-                  : true) &&
-                (createdTimeTo
-                  ? moment(d.createdTime).isAfter(createdTimeTo)
-                  : true) &&
-                (updatedTimeFrom
-                  ? moment(d.updatedTime).isBefore(updatedTimeFrom)
-                  : true) &&
-                (updatedTimeTo
-                  ? moment(d.updatedTime).isAfter(updatedTimeTo)
-                  : true)
-              );
+  onDelete(contactId: string, contactName: string) {
+    const confirmDialogRef = this.dialog.open(DialogComponent, {
+      disableClose: false,
+    });
+    confirmDialogRef.componentInstance.content = `You want to delete the "${contactName}"?`;
+    confirmDialogRef.componentInstance.sendingSubmitSignal.subscribe(
+      (signal) => {
+        if (signal) {
+          this.contactService
+            .deleteContact(
+              contactId,
+              [],
+              [{ name: 'skipLoading', value: 'true' }]
+            )
+            .pipe(
+              tap((res) => {
+                if (res['status'] === 1) {
+                  this.toastService.showSuccessMessage('Delete the Contact!');
+                } else {
+                  this.toastService.showErrorMessage('Delete the Contact!');
+                }
+              })
+            )
+            .subscribe(() => {
+              confirmDialogRef.close();
             });
-          }
-        )
-      )
-      .subscribe((data) => {
-        this.dataSource = data;
-      });
+        }
+      }
+    );
+    confirmDialogRef.afterClosed().subscribe((result) => {
+      this.loadData();
+    });
   }
-
-  // function to reset the table
-  reset() {
-    this.filterSubject.next({});
-    this.initData();
-    this.leadSrc = new FormControl('');
-    this.assignedTo = new FormControl('');
-    this.createdTimeForm.reset();
-    this.updatedTimeForm.reset();
-  }
-
-  // navigate to edit contact page
-  navigateToEdit(contactId: string) {
-    let navigationExtras: NavigationExtras = {
-      queryParams: { id: contactId },
-    };
-    this.router.navigate(['/contacts/edit'], navigationExtras);
-  }
-
-  applySelectFilter(filterValue: string, filterBy: string) {
-    const currentFilterObj = this.filterSubject.getValue();
-    this.filterSubject.next({ ...currentFilterObj, [filterBy]: filterValue });
-  }
-
-  applyDateFilter(dateForm: FormGroup, filterBy: string) {
-    this.submitted = true;
-    const date = dateForm.value;
-    const currentFilterObj = this.filterSubject.getValue();
-
-    if (filterBy == 'createdTime') {
-      const dateFrom = moment(date.createdTimeFrom).format('mm/dd/yyyy');
-      const dateTo = moment(date.createdTimeTo).format('mm/dd/yyyy');
-      this.filterSubject.next({
-        ...currentFilterObj,
-        ['createdTimeFrom']: dateFrom,
-        ['createdTimeTo']: dateTo,
-      });
-    }
-    if (filterBy == 'updatedTime') {
-      const dateFrom = moment(date.updatedTimeFrom).format('mm/dd/yyyy');
-      const dateTo = moment(date.updatedTimeTo).format('mm/dd/yyyy');
-      this.filterSubject.next({
-        ...currentFilterObj,
-        ['updatedTimeFrom']: dateFrom,
-        ['updatedTimeTo']: dateTo,
-      });
-    }
-  }
-
-  onDelete(contactId: string, contactName: string) {}
-
-  onCheckboxClicked(event: any) {}
-
-  onMassDeleteBtnClicked() {}
-
-  onClickedRow(contactId: string) {}
 }

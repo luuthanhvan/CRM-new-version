@@ -4,7 +4,7 @@
       <h2 class="float-start" id="contacts-heading">
         {{ "shared.contacts" | translate }}
       </h2>
-      <form class="float-end">
+      <!-- <form class="float-end">
         <button
           mat-button
           (click)="applySelectFilter(searchText.value, 'contactName')"
@@ -19,9 +19,9 @@
           />
         </mat-form-field>
         <button mat-button (click)="reset()"><mat-icon>clear</mat-icon></button>
-      </form>
+      </form> -->
     </div>
-    <div class="col-12 my-3" id="contacts-filter-wrapper">
+    <!-- <div class="col-12 my-3" id="contacts-filter-wrapper">
       <mat-card class="contact-filters-card">
         <mat-card-header>
           <mat-card-title>
@@ -195,7 +195,7 @@
           </button>
         </mat-card-actions>
       </mat-card>
-    </div>
+    </div> -->
     <div class="col-12 my-3">
       <h3 class="float-start my-1">List of Contacts</h3>
       <div
@@ -207,15 +207,14 @@
           mat-button
           [disabled]="isDisabled"
           [ngClass]="isDisabled ? 'btn-disabled' : 'btn-danger'"
-          (click)="onMassDeleteBtnClicked()"
         >
           <mat-icon>delete</mat-icon>
           <span>{{ "action.delete" | translate }}</span>
         </button>
 
-        <button class="btn-primary" mat-button>
+        <button class="btn-primary" mat-button (click)="openFormDialog('add')">
           <mat-icon>add</mat-icon>
-          <span>{{ "contacts.createNewCustomer" | translate }}</span>
+          <span>Create new Contact</span>
         </button>
       </div>
     </div>
@@ -226,34 +225,22 @@
         [dataSource]="dataSource"
         class="mat-elevation-z8"
       >
-        <!-- Checkbox column -->
         <ng-container matColumnDef="check">
           <th mat-header-cell *matHeaderCellDef class="text-center"></th>
           <td class="text-center" mat-cell *matCellDef="let element">
-            <input
-              type="checkbox"
-              [value]="element._id"
-              (change)="onCheckboxClicked($event)"
-            />
+            <input type="checkbox" [value]="element._id" />
           </td>
         </ng-container>
 
-        <!-- Contact name Column -->
         <ng-container matColumnDef="contactName">
           <th mat-header-cell *matHeaderCellDef class="text-center">
             {{ "shared.name" | translate }}
           </th>
-          <td
-            class="text-center pointer"
-            mat-cell
-            *matCellDef="let element"
-            (click)="onClickedRow(element._id)"
-          >
+          <td class="text-center pointer" mat-cell *matCellDef="let element">
             {{ element.contactName }}
           </td>
         </ng-container>
 
-        <!-- Salutation Column -->
         <ng-container matColumnDef="salutation">
           <th mat-header-cell *matHeaderCellDef class="text-center">
             {{ "contacts.salutation" | translate }}
@@ -263,7 +250,6 @@
           </td>
         </ng-container>
 
-        <!-- Lead source Column -->
         <ng-container matColumnDef="leadSrc">
           <th mat-header-cell *matHeaderCellDef class="text-center">
             {{ "contacts.leadSrc" | translate }}
@@ -273,7 +259,6 @@
           </td>
         </ng-container>
 
-        <!-- Assigned to Column -->
         <ng-container matColumnDef="assignedTo">
           <th mat-header-cell *matHeaderCellDef class="text-center">
             {{ "shared.assignedTo" | translate }}
@@ -283,51 +268,37 @@
           </td>
         </ng-container>
 
-        <!-- Created time Column -->
         <ng-container matColumnDef="createdTime">
           <th mat-header-cell *matHeaderCellDef class="text-center">
             {{ "date.createdTime" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
-            <!-- {{ datetimeService.datetimeFormat(element.createdTime, 2) }} -->
-            {{ element.createdTime }}
+            {{ element.createdTime | date : "medium" }}
           </td>
         </ng-container>
 
-        <!-- Updated time Column -->
         <ng-container matColumnDef="updatedTime">
           <th mat-header-cell *matHeaderCellDef class="text-center">
             {{ "date.updatedTime" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
-            <!-- {{ datetimeService.datetimeFormat(element.updatedTime, 2) }} -->
-            {{ element.updatedTime }}
+            {{ element.updatedTime | date : "medium" }}
           </td>
         </ng-container>
 
-        <!-- Modify contact infomation column -->
-        <ng-container matColumnDef="modify">
+        <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef class="text-center">
-            {{ "action.modify" | translate }}
+            {{ "action.actions" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             <mat-icon
-              class="text-warning pointer"
-              (click)="navigateToEdit(element._id)"
+              class="text-warning pointer mx-1"
+              (click)="openFormDialog('edit', element._id)"
             >
               edit
             </mat-icon>
-          </td>
-        </ng-container>
-
-        <!-- Delete contact infomation column -->
-        <ng-container matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef class="text-center">
-            {{ "action.delete" | translate }}
-          </th>
-          <td class="text-center" mat-cell *matCellDef="let element">
             <mat-icon
-              class="text-danger pointer"
+              class="text-danger pointer mx-1"
               (click)="onDelete(element._id, element.contactName)"
             >
               delete
@@ -339,5 +310,11 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
+    <mat-paginator
+      #contactPaginator
+      [length]="totalRecords"
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 20, 30, 40, 50]"
+    ></mat-paginator>
   </div>
 </div>

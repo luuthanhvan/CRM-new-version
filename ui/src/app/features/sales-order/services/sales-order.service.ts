@@ -13,19 +13,28 @@ export class SalesOrderService {
   private readonly endpointService = inject(EndpointService);
   private stop$: Subject<void> = new Subject<void>();
 
-  addSalesOrder(data: SalesOrder, paramsArr?: any[]): Observable<any> {
+  addSalesOrder(
+    data: SalesOrder,
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<any> {
     return this.endpointService.addEndpoint(
       this.endpoints.salesOrder.v1.salesOrder,
       paramsArr || [],
-      data
+      data,
+      headerOptions
     );
   }
 
-  getListOfSalesOrder(paramsArr?: any[]): Observable<SalesOrder[]> {
+  getListOfSalesOrder(
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<SalesOrder[]> {
     return this.endpointService
       .fetchEndpoint(
         this.endpoints.salesOrder.v1.salesOrderList,
-        paramsArr || []
+        paramsArr || [],
+        headerOptions
       )
       .pipe(
         map((res) => res['data']),
@@ -34,8 +43,11 @@ export class SalesOrderService {
       );
   }
 
-  getSalesOrder(orderId: string, paramsArr?: any[]): Observable<SalesOrder> {
-    const headerOptions = [{ name: 'skipLoading', value: 'true' }];
+  getSalesOrder(
+    orderId: string,
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<SalesOrder> {
     return this.endpointService
       .fetchEndpoint(
         `${this.endpoints.salesOrder.v1.salesOrder}/${orderId}`,
@@ -51,9 +63,9 @@ export class SalesOrderService {
   updateSalesOrder(
     orderId: string,
     orderInfo: SalesOrder,
-    paramsArr?: any[]
+    paramsArr?: any[],
+    headerOptions?: any[]
   ): Observable<any> {
-    const headerOptions = [{ name: 'skipLoading', value: 'true' }];
     return this.endpointService
       .updateEndpoint(
         `${this.endpoints.salesOrder.v1.salesOrder}/${orderId}`,
@@ -64,22 +76,29 @@ export class SalesOrderService {
       .pipe(takeUntil(this.stop$));
   }
 
-  deleteSalesOrder(orderId: string, paramsArr?: any[]): Observable<any> {
+  deleteSalesOrder(
+    orderId: string,
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<any> {
     return this.endpointService
       .deleteEndpoint(
         `${this.endpoints.salesOrder.v1.salesOrder}/${orderId}`,
-        paramsArr || []
+        paramsArr || [],
+        headerOptions
       )
       .pipe(takeUntil(this.stop$));
   }
 
   searchSalesOrder(
     subject: string,
-    paramsArr?: any[]
+    paramsArr?: any[],
+    headerOptions?: any[]
   ): Observable<any> {
     return this.endpointService.fetchEndpoint(
       `${this.endpoints.salesOrder.v1.searchSalesOrder}/${subject}`,
-      paramsArr || []
+      paramsArr || [],
+      headerOptions
     );
   }
 }

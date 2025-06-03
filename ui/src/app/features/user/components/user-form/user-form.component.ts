@@ -49,8 +49,6 @@ export class UserFormComponent implements OnInit {
   data = inject(MAT_DIALOG_DATA);
   userForm!: FormGroup;
 
-  constructor() {}
-
   ngOnInit(): void {
     this.userForm = this.formBuilder.group(
       {
@@ -79,10 +77,11 @@ export class UserFormComponent implements OnInit {
   }
 
   getUserById() {
-    console.log('data', this.data);
-    this.userService.getUser(this.data.userId, []).subscribe((data) => {
-      this.setFormData(data);
-    });
+    this.userService
+      .getUser(this.data.userId, [], [{ name: 'skipLoading', value: 'true' }])
+      .subscribe((data) => {
+        this.setFormData(data);
+      });
   }
 
   setFormData(data: User) {
@@ -94,7 +93,6 @@ export class UserFormComponent implements OnInit {
     this.userForm.controls['phone'].setValue(data['phone'] || '');
     this.userForm.controls['isAdmin'].setValue(data['isAdmin'] || false);
     this.userForm.controls['isActive'].setValue(data['isActive'] || false);
-    console.log(this.userForm);
   }
 
   onSubmit() {
@@ -113,10 +111,10 @@ export class UserFormComponent implements OnInit {
         .pipe(
           tap((res) => {
             if (res['status'] === 1) {
-              this.toastService.showSuccessMessage(
-                'Add new User!'
-              );
+              this.toastService.showSuccessMessage('Add new User!');
               this.dialogRef.close();
+            } else {
+              this.toastService.showErrorMessage('Add new User!');
             }
           })
         )
@@ -127,10 +125,10 @@ export class UserFormComponent implements OnInit {
         .pipe(
           tap((res) => {
             if (res['status'] === 1) {
-              this.toastService.showSuccessMessage(
-                'Update the User!'
-              );
+              this.toastService.showSuccessMessage('Update the User!');
               this.dialogRef.close();
+            } else {
+              this.toastService.showErrorMessage('Update new User!');
             }
           })
         )

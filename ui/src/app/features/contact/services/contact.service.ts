@@ -13,17 +13,29 @@ export class ContactService {
   private readonly endpointService = inject(EndpointService);
   private stop$: Subject<void> = new Subject<void>();
 
-  addContact(data: Contact, paramsArr?: any[]): Observable<any> {
+  addContact(
+    data: Contact,
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<any> {
     return this.endpointService.addEndpoint(
       this.endpoints.contact.v1.contact,
       paramsArr || [],
-      data
+      data,
+      headerOptions
     );
   }
 
-  getListOfContacts(paramsArr?: any[]): Observable<Contact[]> {
+  getListOfContacts(
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<Contact[]> {
     return this.endpointService
-      .fetchEndpoint(this.endpoints.contact.v1.contactList, paramsArr || [])
+      .fetchEndpoint(
+        this.endpoints.contact.v1.contactList,
+        paramsArr || [],
+        headerOptions
+      )
       .pipe(
         map((res) => res['data']),
         takeUntil(this.stop$),
@@ -31,8 +43,11 @@ export class ContactService {
       );
   }
 
-  getContact(contactId: string, paramsArr?: any[]): Observable<Contact> {
-    const headerOptions = [{ name: 'skipLoading', value: 'true' }];
+  getContact(
+    contactId: string,
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<Contact> {
     return this.endpointService
       .fetchEndpoint(
         `${this.endpoints.contact.v1.contact}/${contactId}`,
@@ -48,9 +63,9 @@ export class ContactService {
   updateContact(
     contactId: string,
     contactInfo: Contact,
-    paramsArr?: any[]
+    paramsArr?: any[],
+    headerOptions?: any[]
   ): Observable<any> {
-    const headerOptions = [{ name: 'skipLoading', value: 'true' }];
     return this.endpointService
       .updateEndpoint(
         `${this.endpoints.contact.v1.contact}/${contactId}`,
@@ -61,19 +76,29 @@ export class ContactService {
       .pipe(takeUntil(this.stop$));
   }
 
-  deleteContact(contactId: string, paramsArr?: any[]): Observable<any> {
+  deleteContact(
+    contactId: string,
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<any> {
     return this.endpointService
       .deleteEndpoint(
         `${this.endpoints.contact.v1.contact}/${contactId}`,
-        paramsArr || []
+        paramsArr || [],
+        headerOptions
       )
       .pipe(takeUntil(this.stop$));
   }
 
-  searchContacts(subject: string, paramsArr?: any[]): Observable<any> {
+  searchContacts(
+    subject: string,
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<any> {
     return this.endpointService.fetchEndpoint(
       `${this.endpoints.contact.v1.searchContact}/${subject}`,
-      paramsArr || []
+      paramsArr || [],
+      headerOptions
     );
   }
 }

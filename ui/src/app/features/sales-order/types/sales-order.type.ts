@@ -1,13 +1,13 @@
 export type SalesOrder = {
-  _id: string;
+  _id?: string;
   no?: number;
   subject: string;
   contactName: string;
   status: string;
   total: string;
-  assignedTo?: string;
+  assignedTo: string;
   creator?: string;
   description: string;
-  createdTime?: string;
-  updatedTime?: string;
+  createdTime?: Date;
+  updatedTime?: Date;
 };
