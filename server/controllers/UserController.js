@@ -45,11 +45,10 @@ class UserController {
       const query = req.isAdmin ? {} : { _id: req.userId };
       User.find(query, "-username -password").then((data) => {
         logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_NAMES_USERS_SUCCESS);
-        const resData = data.length > 0 ? mutipleMongooseToObject(data) : [];
-        const names = _.pick(resData, ["name"]);
+        const names = data.length > 0 ? _.map(data, _.property("name")) : [];
         return apiResponse.successResponseWithData(
           res,
-          RESPONSE_MESSAGE.FETCHING_LIST_OF_NAMES_USERS_ERROR,
+          RESPONSE_MESSAGE.FETCHING_LIST_OF_NAMES_USERS_SUCCESS,
           names
         );
       });

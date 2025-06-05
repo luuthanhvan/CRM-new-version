@@ -31,6 +31,7 @@ router.get(
 router.get(
   "/list/contact-name",
   jwtHelper.verifyJwtToken,
+  authController.verifyUser,
   contactsController.getListOfContactNames
 );
 

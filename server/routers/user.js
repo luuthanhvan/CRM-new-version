@@ -18,6 +18,7 @@ router.post("/:id", jwtHelper.verifyJwtToken, userController.changePassword);
 router.get(
   "/list/name",
   jwtHelper.verifyJwtToken,
+  authController.verifyUser,
   userController.getListOfNames
 );
 

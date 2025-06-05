@@ -3,6 +3,7 @@ const { mutipleMongooseToObject } = require("../ultils/mongoose");
 const apiResponse = require("../ultils/apiResponse");
 const logger = require("../configs/winston");
 const { RESPONSE_MESSAGE } = require("../ultils/constants");
+const _ = require("lodash");
 
 class ContactsController {
   storeContact(req, res) {
@@ -51,8 +52,7 @@ class ContactsController {
       const query = req.isAdmin ? {} : { assignedTo: req.name };
       Contacts.find(query).then((data) => {
         logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACT_NAMES_SUCCESS);
-        const resData = data.length > 0 ? mutipleMongooseToObject(data) : [];
-        const names = _.pick(resData, ["contactName"]);
+        const names = data.length > 0 ? _.map(data, _.property("contactName")) : [];
         return apiResponse.successResponseWithData(
           res,
           RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACT_NAMES_SUCCESS,
