@@ -45,6 +45,28 @@ class ContactsController {
     }
   }
 
+  getListOfContactNames(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACT_NAMES);
+      const query = req.isAdmin ? {} : { assignedTo: req.name };
+      Contacts.find(query).then((data) => {
+        logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACT_NAMES_SUCCESS);
+        const resData = data.length > 0 ? mutipleMongooseToObject(data) : [];
+        const names = _.pick(resData, ["contactName"]);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACT_NAMES_SUCCESS,
+          names
+        );
+      });
+    } catch (err) {
+      logger.error(
+        `${RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACT_NAMES_ERROR} ${err}`
+      );
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
+
   getContact(req, res) {
     try {
       logger.info(RESPONSE_MESSAGE.FETCHING_CONTACT);

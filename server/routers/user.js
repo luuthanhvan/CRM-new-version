@@ -15,5 +15,10 @@ router.get(
 router.get("/:id", jwtHelper.verifyJwtToken, userController.getUser);
 router.put("/:id", jwtHelper.verifyJwtToken, userController.updateUser);
 router.post("/:id", jwtHelper.verifyJwtToken, userController.changePassword);
+router.get(
+  "/list/name",
+  jwtHelper.verifyJwtToken,
+  userController.getListOfNames
+);
 
 module.exports = router;

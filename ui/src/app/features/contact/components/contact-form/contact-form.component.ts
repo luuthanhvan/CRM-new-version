@@ -25,8 +25,6 @@ import { ContactService } from '~features/contact/services/contact.service';
 import type { Contact } from '~features/contact/types/contact.type';
 import type { User } from '~features/user/types/user.type';
 import { UserService } from '~features/user/services/user.service';
-import { SalesOrderService } from '~features/sales-order/services/sales-order.service';
-import { SalesOrder } from '~features/sales-order/types/sales-order.type';
 
 @Component({
   selector: 'app-contact-form',
@@ -56,7 +54,6 @@ export class ContactFormComponent implements OnInit {
   private toastService = inject(ToastService);
   private contactService = inject(ContactService);
   private userService = inject(UserService);
-  private salesOrderService = inject(SalesOrderService);
   data = inject(MAT_DIALOG_DATA);
   salutations: string[] = ['None', 'Mr.', 'Mrs.', 'Ms.', 'Dr.', 'Prof.'];
   leadSources: string[] = [
@@ -90,7 +87,7 @@ export class ContactFormComponent implements OnInit {
     });
 
     this.userService
-      .getListOfUsers([], [{ name: 'skipLoading', value: 'true' }])
+      .getListOfUserNames([], [{ name: 'skipLoading', value: 'true' }])
       .subscribe((data) => {
         this.assignedToUsers = data || [];
       });

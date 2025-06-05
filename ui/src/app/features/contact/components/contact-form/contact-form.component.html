@@ -76,9 +76,9 @@
           <mat-select formControlName="assignedTo">
             <mat-option
               *ngFor="let user of assignedToUsers"
-              [value]="user.name"
+              [value]="user"
             >
-              {{ user.name }}
+              {{ user }}
             </mat-option>
           </mat-select>
           @if (contactForm.controls['assignedTo'].errors?.['required']) {

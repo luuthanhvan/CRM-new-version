@@ -38,7 +38,7 @@ router.post(
 router.get(
   "/search/:contactName",
   jwtHelper.verifyJwtToken,
-  salesOrderController.findSalesOrder
+  salesOrderController.findSalesOrderByContactName
 );
 
 module.exports = router;

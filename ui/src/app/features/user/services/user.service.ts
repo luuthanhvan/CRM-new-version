@@ -53,6 +53,22 @@ export class UserService {
       );
   }
 
+  getListOfUserNames(
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<User[]> {
+    return this.endpointService
+      .fetchEndpoint(
+        this.endpoints.user.v1.userNamesList,
+        paramsArr || [],
+        headerOptions
+      )
+      .pipe(
+        map((res) => res['data']),
+        takeUntil(this.stop$)
+      );
+  }
+
   getUser(
     userId: string,
     paramsArr?: any[],

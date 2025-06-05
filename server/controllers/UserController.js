@@ -2,7 +2,7 @@ const User = require("../models/User");
 const apiResponse = require("../ultils/apiResponse");
 const _ = require("lodash");
 const logger = require("../configs/winston");
-const { RESPONSE_MESSAGE, CONFIG } = require("../ultils/constants");
+const { RESPONSE_MESSAGE } = require("../ultils/constants");
 class UserController {
   createNewUser(req, res) {
     try {
@@ -31,6 +31,26 @@ class UserController {
           res,
           RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_SUCCESS,
           data
+        );
+      });
+    } catch (err) {
+      logger.error(`${RESPONSE_MESSAGE.FETCHING_LIST_OF_USERS_ERROR} ${err}`);
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
+
+  getListOfNames(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_NAMES_USERS);
+      const query = req.isAdmin ? {} : { _id: req.userId };
+      User.find(query, "-username -password").then((data) => {
+        logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_NAMES_USERS_SUCCESS);
+        const resData = data.length > 0 ? mutipleMongooseToObject(data) : [];
+        const names = _.pick(resData, ["name"]);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.FETCHING_LIST_OF_NAMES_USERS_ERROR,
+          names
         );
       });
     } catch (err) {

@@ -25,7 +25,6 @@ import { UserService } from '~features/user/services/user.service';
 import { SalesOrderService } from '~features/sales-order/services/sales-order.service';
 import { SalesOrder } from '~features/sales-order/types/sales-order.type';
 
-
 @Component({
   selector: 'app-sales-order-form',
   imports: [
@@ -72,13 +71,15 @@ export class SalesOrderFormComponent implements OnInit {
       assignedTo: new FormControl('', [Validators.required]),
       description: new FormControl(''),
     });
+
     this.contactService
-      .getListOfContacts([], [{ name: 'skipLoading', value: 'true' }])
+      .getListOfContactNames([], [{ name: 'skipLoading', value: 'true' }])
       .subscribe((data) => {
         this.contacts = data || [];
       });
+
     this.userService
-      .getListOfUsers([], [{ name: 'skipLoading', value: 'true' }])
+      .getListOfUserNames([], [{ name: 'skipLoading', value: 'true' }])
       .subscribe((data) => {
         this.assignedToUsers = data || [];
       });

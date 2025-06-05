@@ -115,21 +115,21 @@ class SalesOrderController {
     }
   }
 
-  findSalesOrder(req, res) {
+  findSalesOrderByContactName(req, res) {
     try {
-      logger.info(RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_ID);
+      logger.info(RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_CONTACT_NAME);
       const contactName = req.params.contactName;
       SalesOrder.find({ contactName: contactName }).then((data) => {
-        logger.info(RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_ID_SUCCESS);
+        logger.info(RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_CONTACT_NAME_SUCCESS);
         return apiResponse.successResponseWithData(
           res,
-          RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_ID_SUCCESS,
+          RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_CONTACT_NAME_SUCCESS,
           data
         );
       });
     } catch (err) {
       logger.error(
-        `${RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_ID_ERROR} ${err}`
+        `${RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_CONTACT_NAME_ERROR} ${err}`
       );
       return apiResponse.ErrorResponse(res, err);
     }

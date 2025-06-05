@@ -43,6 +43,22 @@ export class ContactService {
       );
   }
 
+  getListOfContactNames(
+    paramsArr?: any[],
+    headerOptions?: any[]
+  ): Observable<Contact[]> {
+    return this.endpointService
+      .fetchEndpoint(
+        this.endpoints.contact.v1.contactNameList,
+        paramsArr || [],
+        headerOptions
+      )
+      .pipe(
+        map((res) => res['data']),
+        takeUntil(this.stop$)
+      );
+  }
+
   getContact(
     contactId: string,
     paramsArr?: any[],

@@ -35,9 +35,9 @@
           <mat-select formControlName="contactName">
             <mat-option
               *ngFor="let contact of contacts"
-              [value]="contact.contactName"
+              [value]="contact"
             >
-              {{ contact.contactName }}
+              {{ contact }}
             </mat-option>
           </mat-select>
           @if (salesOrderForm.controls['contactName'].errors?.['required']) {
@@ -53,9 +53,9 @@
           <mat-select formControlName="assignedTo">
             <mat-option
               *ngFor="let user of assignedToUsers"
-              [value]="user.name"
+              [value]="user"
             >
-              {{ user.name }}
+              {{ user }}
             </mat-option>
           </mat-select>
           @if (salesOrderForm.controls['assignedTo'].errors?.['required']) {

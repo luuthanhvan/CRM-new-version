@@ -23,6 +23,15 @@ router.post(
   jwtHelper.verifyJwtToken,
   contactsController.multiDeleteContact
 );
-router.get("/search/:contactName", contactsController.findContact);
+router.get(
+  "/search/:contactName",
+  jwtHelper.verifyJwtToken,
+  contactsController.findContact
+);
+router.get(
+  "/list/contact-name",
+  jwtHelper.verifyJwtToken,
+  contactsController.getListOfContactNames
+);
 
 module.exports = router;

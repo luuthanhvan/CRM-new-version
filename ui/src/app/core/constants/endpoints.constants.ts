@@ -12,6 +12,7 @@ export const getEndpoints = () => {
       v1: {
         user: `${environment.apiBaseUrl}/v1/user`,
         userList: `${environment.apiBaseUrl}/v1/user/list`,
+        userNamesList: `${environment.apiBaseUrl}/v1/user/list/name`,
         createUser: `${environment.apiBaseUrl}/v1/user/create`,
       }
     },
@@ -19,6 +20,7 @@ export const getEndpoints = () => {
       v1: {
         contact: `${environment.apiBaseUrl}/v1/contact`,
         contactList: `${environment.apiBaseUrl}/v1/contact/list`,
+        contactNameList: `${environment.apiBaseUrl}/v1/contact/list/contact-name`,
         massDeleteContact: `${environment.apiBaseUrl}/v1/contact/delete`,
         searchContact: `${environment.apiBaseUrl}/v1/contact/search`,
       }
