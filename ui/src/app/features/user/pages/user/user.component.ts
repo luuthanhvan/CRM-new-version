@@ -62,25 +62,11 @@ export class UserComponent implements OnInit {
   }
 
   loadData() {
-    const currentUserInfo = window.localStorage.getItem('currentUser');
-    if (currentUserInfo) {
-      const parsedUserInfo = JSON.parse(currentUserInfo);
-      const reqParams = [
-        {
-          paramName: 'isAdmin',
-          paramVal: parsedUserInfo.isAdmin,
-        },
-        {
-          paramName: 'userId',
-          paramVal: parsedUserInfo._id,
-        },
-      ];
-      this.userService.getListOfUsers(reqParams).subscribe((data) => {
-        this.totalRecords = data.length;
-        this.dataSource = new MatTableDataSource(data);
-        this.dataSource.paginator = this.userPaginator;
-      });
-    }
+    this.userService.getListOfUsers().subscribe((data) => {
+      this.totalRecords = data.length;
+      this.dataSource = new MatTableDataSource(data);
+      this.dataSource.paginator = this.userPaginator;
+    });
   }
 
   openUserDialog(action: string, userId?: string) {

@@ -18,3 +18,13 @@
     padding: 0;
   }
 }
+
+.search-field {
+  height: 48px;
+  .mat-mdc-form-field-infix {
+    width: 250px;
+    height: 48px;
+    display: flex;
+    gap: 12px;
+  }
+}

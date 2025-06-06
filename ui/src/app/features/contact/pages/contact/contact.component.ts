@@ -109,25 +109,11 @@ export class ContactComponent implements OnInit {
   }
 
   loadData() {
-    const currentUserInfo = window.localStorage.getItem('currentUser');
-    if (currentUserInfo) {
-      const parsedUserInfo = JSON.parse(currentUserInfo);
-      const reqParams = [
-        {
-          paramName: 'isAdmin',
-          paramVal: parsedUserInfo.isAdmin,
-        },
-        {
-          paramName: 'userId',
-          paramVal: parsedUserInfo._id,
-        },
-      ];
-      this.contactService.getListOfContacts(reqParams).subscribe((data) => {
-          this.totalRecords = data.length;
-          this.dataSource = new MatTableDataSource(data);
-          this.dataSource.paginator = this.contactPaginator;
-      });
-    }
+    this.contactService.getListOfContacts().subscribe((data) => {
+      this.totalRecords = data.length;
+      this.dataSource = new MatTableDataSource(data);
+      this.dataSource.paginator = this.contactPaginator;
+    });
   }
 
   openFormDialog(action: string, contactId?: string) {

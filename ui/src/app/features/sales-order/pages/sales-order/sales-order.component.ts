@@ -25,13 +25,24 @@ import {
   debounceTime,
   startWith,
 } from 'rxjs/operators';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+} from '@angular/forms';
+import { SalesOrder } from '~features/sales-order/types/sales-order.type';
 import { SalesOrderService } from '~features/sales-order/services/sales-order.service';
 import { ToastService } from '~core/services/toast.service';
 import moment from 'moment';
 import { SalesOrderFilterGroupDialogComponent } from '~features/sales-order/components/sales-order-filter-group-dialog/sales-order-filter-group-dialog.component';
 import { SalesOrderFormComponent } from '~features/sales-order/components/sales-order-form/sales-order-form.component';
 import { DialogComponent } from '~core/components/dialog/dialog.component';
-import { SalesOrder } from '~features/sales-order/types/sales-order.type';
+import { SalesOrderDetailsComponent } from '~features/sales-order/components/sales-order-details/sales-order-details.component';
+
+// interface IObjectKeys {
+//   [key: string]: string | number | undefined;
+// }
 
 @Component({
   selector: 'app-sales-order',
@@ -58,8 +69,8 @@ import { SalesOrder } from '~features/sales-order/types/sales-order.type';
 })
 export class SalesOrderComponent implements OnInit {
   @ViewChild(MatPaginator) salesOrderPaginator!: MatPaginator;
-  displayedColumns: string[] = [
-    'check',
+  displayedColumns = [
+    'select',
     'subject',
     'contactName',
     'status',
@@ -69,6 +80,15 @@ export class SalesOrderComponent implements OnInit {
     'updatedTime',
     'actions',
   ];
+  // displayedHeaders: IObjectKeys  = {
+  //   subject: 'Subject',
+  //   contactName: 'Contact Name',
+  //   status: 'Status',
+  //   total: 'Total',
+  //   assignedTo: 'Assigned To',
+  //   createdTime: 'Created Time',
+  //   updatedTime: 'Updated Time',
+  // };
   statusNames: string[] = ['Created', 'Approved', 'Delivered', 'Canceled'];
   statusFromDashboard!: string;
   checkArray: string[] = [];
@@ -77,6 +97,9 @@ export class SalesOrderComponent implements OnInit {
   show: boolean = true;
   dataSource = new MatTableDataSource<SalesOrder>([]);
   totalRecords: number = 0;
+
+  status: FormControl = new FormControl('');
+  searchText: FormControl = new FormControl('');
 
   constructor(
     private router: Router,
@@ -102,71 +125,11 @@ export class SalesOrderComponent implements OnInit {
   }
 
   loadData() {
-    const currentUserInfo = window.localStorage.getItem('currentUser');
-    if (currentUserInfo) {
-      const parsedUserInfo = JSON.parse(currentUserInfo);
-      const reqParams = [
-        {
-          paramName: 'isAdmin',
-          paramVal: parsedUserInfo.isAdmin,
-        },
-        {
-          paramName: 'userId',
-          paramVal: parsedUserInfo._id,
-        },
-      ];
-      this.salesOrderService
-        .getListOfSalesOrder(reqParams)
-        .subscribe((data) => {
-          this.totalRecords = data.length;
-          this.dataSource = new MatTableDataSource(data);
-          this.dataSource.paginator = this.salesOrderPaginator;
-        });
-      //   this.salesOrderService.getListOfSalesOrder(reqParams),
-      //   this.filterSubject,
-      //   this.search$,
-      // ])
-      //   .pipe(
-      //     map(
-      //       ([
-      //         salesOrder,
-      //         {
-      //           status,
-      //           assignedTo,
-      //           contactName,
-      //           createdTimeFrom,
-      //           createdTimeTo,
-      //           updatedTimeFrom,
-      //           updatedTimeTo,
-      //         },
-      //         searchResult,
-      //       ]) => {
-      //         const sourceData = searchResult ? searchResult : salesOrder;
-      //         return sourceData.filter((d) => {
-      //           return (
-      //             (status ? d.status === status : true) &&
-      //             (assignedTo ? d.assignedTo === assignedTo : true) &&
-      //             (createdTimeFrom
-      //               ? moment(d.createdTime).isBefore(createdTimeFrom)
-      //               : true) &&
-      //             (createdTimeTo
-      //               ? moment(d.createdTime).isAfter(createdTimeTo)
-      //               : true) &&
-      //             (updatedTimeFrom
-      //               ? moment(d.updatedTime).isBefore(updatedTimeFrom)
-      //               : true) &&
-      //             (updatedTimeTo
-      //               ? moment(d.updatedTime).isAfter(updatedTimeTo)
-      //               : true)
-      //           );
-      //         });
-      //       }
-      //     )
-      //   )
-      //   .subscribe((data) => {
-      //     this.dataSource = data;
-      //   });
-    }
+    this.salesOrderService.getListOfSalesOrder().subscribe((data) => {
+      this.totalRecords = data.length;
+      this.dataSource = new MatTableDataSource(data);
+      this.dataSource.paginator = this.salesOrderPaginator;
+    });
   }
 
   reset() {
@@ -196,6 +159,20 @@ export class SalesOrderComponent implements OnInit {
     formDialogRef.afterClosed().subscribe((result) => {
       this.loadData();
     });
+  }
+
+  openSalesOrderDetailsDialog(orderId: string) {
+    const salesOrderDetailsDialogRef = this.dialog.open(
+      SalesOrderDetailsComponent,
+      {
+        disableClose: true,
+        width: '600px',
+        data: {
+          orderId,
+        },
+      }
+    );
+    salesOrderDetailsDialogRef.afterClosed().subscribe((result) => {});
   }
 
   onDelete(orderId: string, subject: string) {

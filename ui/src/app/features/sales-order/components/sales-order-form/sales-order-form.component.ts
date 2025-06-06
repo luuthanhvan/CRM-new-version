@@ -6,7 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButton } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -35,7 +35,7 @@ import { SalesOrder } from '~features/sales-order/types/sales-order.type';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatIconModule,
-    MatButton,
+    MatButtonModule,
     MatInputModule,
     MatCheckboxModule,
     MatSlideToggleModule,

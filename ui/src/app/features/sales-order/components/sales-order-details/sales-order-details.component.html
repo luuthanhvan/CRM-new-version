@@ -1,0 +1,91 @@
+<div id="sales-order-details-list-wrapper">
+  <h2 mat-dialog-title>Sales Order details</h2>
+  <mat-dialog-content>
+    <mat-list role="list">
+      <mat-list-item
+        role="listitem"
+        class="d-flex justify-content-between align-items-center"
+      >
+        <span class="text-bold float-start">{{
+          "salesOrder.subject" | translate
+        }}</span>
+        <span class="text-grey float-end">{{ salesOrder.subject }}</span>
+      </mat-list-item>
+
+      <mat-list-item
+        role="listitem"
+        class="d-flex justify-content-between align-items-center"
+      >
+        <span class="text-bold float-start">Contact name</span>
+        <span class="text-grey float-end">{{ salesOrder.contactName }}</span>
+      </mat-list-item>
+
+      <mat-list-item
+        role="listitem"
+        class="d-flex justify-content-between align-items-center"
+      >
+        <span class="text-bold loat-start">{{
+          "salesOrder.status" | translate
+        }}</span>
+        <span class="text-grey float-end">{{ salesOrder.status }}</span>
+      </mat-list-item>
+
+      <mat-list-item
+        role="listitem"
+        class="d-flex justify-content-between align-items-center"
+      >
+        <span class="text-bold loat-start">{{
+          "salesOrder.total" | translate
+        }}</span>
+        <span class="text-grey float-end">{{ salesOrder.total }}</span>
+      </mat-list-item>
+
+      <mat-list-item
+        role="listitem"
+        class="d-flex justify-content-between align-items-center"
+      >
+        <span class="text-bold loat-start">Assigned to</span>
+        <span class="text-grey float-end">{{ salesOrder.assignedTo }}</span>
+      </mat-list-item>
+
+      <mat-list-item
+        role="listitem"
+        class="d-flex justify-content-between align-items-center"
+      >
+        <span class="text-bold loat-start">Creator</span>
+        <span class="text-grey float-end">{{ salesOrder.creator }}</span>
+      </mat-list-item>
+
+      <mat-list-item
+        role="listitem"
+        class="d-flex justify-content-between align-items-center"
+      >
+        <span class="text-bold loat-start">Description</span>
+        <span class="text-grey float-end">{{ salesOrder.description }}</span>
+      </mat-list-item>
+
+      <mat-list-item
+        role="listitem"
+        class="d-flex justify-content-between align-items-center"
+      >
+        <span class="text-bold loat-start">Created time</span>
+        <span class="text-grey float-end">{{
+          salesOrder.createdTime | date : "medium"
+        }}</span>
+      </mat-list-item>
+
+      <mat-list-item
+        role="listitem"
+        class="d-flex justify-content-between align-items-center"
+      >
+        <span class="text-bold loat-start">Updated time</span>
+        <span class="text-grey float-end">{{
+          salesOrder.updatedTime | date : "medium"
+        }}</span>
+      </mat-list-item>
+    </mat-list>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</div>

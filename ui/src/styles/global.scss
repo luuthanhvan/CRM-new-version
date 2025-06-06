@@ -160,3 +160,7 @@ mat-progress-spinner {
   transform: translate(-50%, -50%);
   z-index: 2;
 }
+
+.mat-mdc-list-item {
+  border-bottom: 1px solid $grey-2;
+}
