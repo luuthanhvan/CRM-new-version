@@ -37,10 +37,9 @@ export class LoginComponent implements OnInit {
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
   private toastService = inject(ToastService);
-
   loginForm!: FormGroup;
   submitted: boolean = false;
-  errorMessage!: string;
+  errorMessage: string = '';
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({

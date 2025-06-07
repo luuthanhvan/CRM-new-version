@@ -24,7 +24,7 @@ export class ToastService {
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'top';
 
-  showSnackbar(context: string, data: {}) {
+  showSnackbar(context: string = SNACK_BAR_MESSAGE_TYPE.default, data: {}) {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data,
       verticalPosition: this.verticalPosition,
@@ -34,7 +34,7 @@ export class ToastService {
     });
   }
 
-  public showSuccessMessage(message: string) {
+  public showSuccessMessage(message: string = '') {
     this.showSnackbar(SNACK_BAR_MESSAGE_TYPE.success, {
       label: 'Success',
       message,
@@ -42,7 +42,7 @@ export class ToastService {
     });
   }
 
-  public showErrorMessage(message: string) {
+  public showErrorMessage(message: string = '') {
     this.showSnackbar(SNACK_BAR_MESSAGE_TYPE.error, {
       label: 'Error',
       message,
@@ -50,7 +50,7 @@ export class ToastService {
     });
   }
 
-  public showWarningMessage(message: string) {
+  public showWarningMessage(message: string = '') {
     this.showSnackbar(SNACK_BAR_MESSAGE_TYPE.warning, {
       label: 'Warning',
       message,
@@ -58,7 +58,7 @@ export class ToastService {
     });
   }
 
-  public showInfoMessage(message: string) {
+  public showInfoMessage(message: string = '') {
     this.showSnackbar(SNACK_BAR_MESSAGE_TYPE.info, {
       label: 'Info',
       message,

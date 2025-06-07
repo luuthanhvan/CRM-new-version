@@ -65,7 +65,7 @@ export class ContactFormComponent implements OnInit {
     'Other',
   ];
   contactForm!: FormGroup;
-  assignedToUsers!: User[];
+  assignedToUsers: User[] = [];
   // retain created time when editing Sales order
   createdTime = new Date();
 

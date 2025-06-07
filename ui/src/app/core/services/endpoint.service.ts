@@ -4,6 +4,16 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { EndpointFactoryService } from './endpoint-factory.service';
 
+type paramObj = {
+  paramName: string;
+  paramVal: string | number | boolean;
+};
+
+type headerObj = {
+  name: string;
+  value: string | number | boolean;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,8 +24,8 @@ export class EndpointService extends EndpointFactoryService {
 
   fetchEndpoint(
     endpoint: string,
-    paramsArr: any[],
-    headerOptions?: any[]
+    paramsArr: paramObj[],
+    headerOptions?: headerObj[]
   ): Observable<any> {
     let params = new HttpParams();
     paramsArr.forEach((param) => {
@@ -33,9 +43,9 @@ export class EndpointService extends EndpointFactoryService {
 
   addEndpoint(
     endpoint: string,
-    paramsArr: any[],
+    paramsArr: paramObj[],
     reqBody: {},
-    headerOptions?: any[]
+    headerOptions?: headerObj[]
   ): Observable<any> {
     let params = new HttpParams();
     paramsArr.forEach((param) => {
@@ -53,9 +63,9 @@ export class EndpointService extends EndpointFactoryService {
 
   updateEndpoint(
     endpoint: string,
-    paramsArr: any[],
+    paramsArr: paramObj[],
     reqBody: {},
-    headerOptions?: any[]
+    headerOptions?: headerObj[]
   ): Observable<any> {
     let params = new HttpParams();
     paramsArr.forEach((param) => {
@@ -73,8 +83,8 @@ export class EndpointService extends EndpointFactoryService {
 
   deleteEndpoint(
     endpoint: string,
-    paramsArr: any[],
-    headerOptions?: any[]
+    paramsArr: paramObj[],
+    headerOptions?: headerObj[]
   ): Observable<any> {
     let params = new HttpParams();
     paramsArr.forEach((param) => {

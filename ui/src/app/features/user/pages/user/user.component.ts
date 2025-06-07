@@ -47,10 +47,10 @@ export class UserComponent implements OnInit {
   displayedColumns: string[] = [
     'name',
     'email',
+    'phone',
     'isAdmin',
     'isActive',
     'createdTime',
-    // 'modify',
   ];
 
   constructor() {

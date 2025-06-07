@@ -24,6 +24,7 @@ import type { User } from '~features/user/types/user.type';
 import { UserService } from '~features/user/services/user.service';
 import { SalesOrderService } from '~features/sales-order/services/sales-order.service';
 import { SalesOrder } from '~features/sales-order/types/sales-order.type';
+import { Contact } from '~features/contact/types/contact.type';
 
 @Component({
   selector: 'app-sales-order-form',
@@ -54,8 +55,8 @@ export class SalesOrderFormComponent implements OnInit {
   statusNames: string[] = ['Created', 'Approved', 'Delivered', 'Canceled'];
   data = inject(MAT_DIALOG_DATA);
   salesOrderForm!: FormGroup;
-  contacts: any[] = [];
-  assignedToUsers!: User[];
+  contacts: Contact[] = [];
+  assignedToUsers: User[] = [];
   // retain created time when editing Sales order
   createdTime = new Date();
 

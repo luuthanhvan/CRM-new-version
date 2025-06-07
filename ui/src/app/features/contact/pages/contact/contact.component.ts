@@ -70,7 +70,6 @@ export class ContactComponent implements OnInit {
     'updatedTime',
     'actions',
   ];
-
   leadSources: string[] = [
     'Existing Customer',
     'Partner',

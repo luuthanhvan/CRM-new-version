@@ -11,7 +11,7 @@ import { ProgressSpinnerComponent } from '~core/components/progress-spinner/prog
 import { AuthService } from '~features/authentication/services/auth.service';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
-
+import { User } from '~features/user/types/user.type';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -31,7 +31,7 @@ import { RouterModule } from '@angular/router';
   ],
 })
 export class HomeComponent implements OnInit {
-  currentUser: any;
+  currentUser!: User;
   isBrowserRefresh: boolean = false;
   isAdminUser: boolean = false;
 

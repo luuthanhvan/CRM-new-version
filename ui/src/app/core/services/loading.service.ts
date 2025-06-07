@@ -8,8 +8,6 @@ import { share } from 'rxjs/operators';
 export class LoadingService {
   private loadingSubject$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor() {}
-
   showLoading() {
     this.loadingSubject$.next(true);
   }

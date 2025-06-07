@@ -11,7 +11,7 @@ import { RouterOutlet } from '@angular/router';
   imports: [TranslateModule, RouterOutlet],
 })
 export class AppComponent {
-  title = 'CRM';
+  title: string = 'CRM';
 
   constructor(
     private matIconRegistry: MatIconRegistry,

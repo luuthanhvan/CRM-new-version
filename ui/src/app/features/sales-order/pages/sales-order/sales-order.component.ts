@@ -71,7 +71,7 @@ import { SalesOrderDetailsComponent } from '~features/sales-order/components/sal
 })
 export class SalesOrderComponent implements OnInit {
   @ViewChild(MatPaginator) salesOrderPaginator!: MatPaginator;
-  displayedColumns = [
+  displayedColumns: string[] = [
     'select',
     'subject',
     'contactName',
@@ -92,7 +92,7 @@ export class SalesOrderComponent implements OnInit {
   //   updatedTime: 'Updated Time',
   // };
   statusNames: string[] = ['Created', 'Approved', 'Delivered', 'Canceled'];
-  statusFromDashboard!: string;
+  statusFromDashboard: string = '';
   checkArray: string[] = [];
   isDisabled: boolean = true; // it used to show/hide the mass delete button
   submitted: boolean = false;
