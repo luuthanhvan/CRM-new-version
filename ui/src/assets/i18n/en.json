@@ -82,6 +82,7 @@
     "actions": "Actions",
     "noAccount": "Don't have an account?",
     "missingValue": "-",
+    "noDataAvailable": "No Data Available",
     "hint": {
       "email": "Example: abc@gmail.com"
     },

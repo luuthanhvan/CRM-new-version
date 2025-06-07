@@ -33,6 +33,7 @@ import moment from 'moment';
 import { ContactFormComponent } from '~features/contact/components/contact-form/contact-form.component';
 import { DialogComponent } from '~core/components/dialog/dialog.component';
 import { ContactDetailsComponent } from '~features/contact/components/contact-details/contact-details.component';
+import { NoDataFoundComponent } from '~core/components/no-data-found/no-data-found.component';
 
 @Component({
   selector: 'app-contact',
@@ -53,6 +54,7 @@ import { ContactDetailsComponent } from '~features/contact/components/contact-de
     MatSelectModule,
     MatPaginatorModule,
     MatTooltipModule,
+    NoDataFoundComponent,
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   templateUrl: './contact.component.html',
@@ -61,7 +63,7 @@ import { ContactDetailsComponent } from '~features/contact/components/contact-de
 export class ContactComponent implements OnInit {
   @ViewChild(MatPaginator) contactPaginator!: MatPaginator;
   displayedColumns: string[] = [
-    'check',
+    'select',
     'contactName',
     'salutation',
     'leadSrc',
@@ -78,9 +80,9 @@ export class ContactComponent implements OnInit {
     'Word of mouth',
     'Other',
   ];
-  isDisabled: boolean = true;
   dataSource = new MatTableDataSource<Contact>([]);
   totalRecords: number = 0;
+  contactIdsChecked: string[] = [];
 
   constructor(
     private router: Router,
@@ -175,5 +177,55 @@ export class ContactComponent implements OnInit {
     confirmDialogRef.afterClosed().subscribe((result) => {
       this.loadData();
     });
+  }
+
+  onBulkDeleteContacts() {
+    const confirmDialogRef = this.dialog.open(DialogComponent, {
+      disableClose: false,
+    });
+    confirmDialogRef.componentInstance.content = `You want to delete the contacts?`;
+    confirmDialogRef.componentInstance.sendingSubmitSignal.subscribe(
+      (signal) => {
+        if (signal) {
+          this.contactService
+            .bulkDeleteContacts(
+              this.contactIdsChecked,
+              [],
+              [{ name: 'skipLoading', value: 'true' }]
+            )
+            .pipe(
+              tap((res) => {
+                if (res['status'] === 1) {
+                  this.toastService.showSuccessMessage('Delete the Contacts!');
+                } else {
+                  this.toastService.showErrorMessage('Delete the Contacts!');
+                }
+              })
+            )
+            .subscribe(() => {
+              confirmDialogRef.close();
+            });
+        }
+      }
+    );
+    confirmDialogRef.afterClosed().subscribe((result) => {
+      this.contactIdsChecked = [];
+      this.loadData();
+    });
+  }
+
+  onCheckboxChecked(event: Event) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    const contactId = (event.target as HTMLInputElement).value;
+    if (isChecked) {
+      // add the checked value to array
+      this.contactIdsChecked.push(contactId);
+    } else {
+      // remove the unchecked value from array
+      this.contactIdsChecked.splice(
+        this.contactIdsChecked.indexOf(contactId),
+        1
+      );
+    }
   }
 }

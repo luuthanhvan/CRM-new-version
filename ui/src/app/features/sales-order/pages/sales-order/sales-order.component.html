@@ -23,11 +23,20 @@
         </div> -->
         <button
           mat-button
-          [ngClass]="isDisabled ? 'btn-disabled' : 'btn-danger'"
-          [disabled]="isDisabled"
+          [ngClass]="
+            orderIdsChecked.length === 0 ? 'btn-disabled' : 'btn-danger'
+          "
+          [disabled]="orderIdsChecked.length === 0"
+          (click)="orderIdsChecked.length !== 0 && onBulkDeleteSalesOrders()"
         >
           <mat-icon>delete</mat-icon>
-          <span>{{ "shared.delete" | translate }}</span>
+          <span>
+            {{
+              orderIdsChecked.length === 0
+                ? ("shared.delete" | translate)
+                : ("shared.deleteSelected" | translate)
+            }}
+          </span>
         </button>
         <!-- <button
           mat-button
@@ -50,11 +59,16 @@
         mat-table
         [dataSource]="dataSource"
         class="mat-elevation-z8"
+        [class.no-data-table]="totalRecords === 0"
       >
         <ng-container matColumnDef="select">
           <th mat-header-cell *matHeaderCellDef></th>
           <td class="text-center" mat-cell *matCellDef="let element">
-            <input type="checkbox" [value]="element._id" />
+            <input
+              type="checkbox"
+              [value]="element._id"
+              (change)="onCheckboxChecked($event)"
+            />
           </td>
         </ng-container>
 
@@ -188,12 +202,15 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
+      <app-no-data-found *ngIf="totalRecords === 0"></app-no-data-found>
     </div>
-    <mat-paginator
-      #salesOrderPaginator
-      [length]="totalRecords"
-      [pageSize]="5"
-      [pageSizeOptions]="[5, 10, 20, 30, 40, 50]"
-    ></mat-paginator>
+    <div [hidden]="totalRecords === 0">
+      <mat-paginator
+        #salesOrderPaginator
+        [length]="totalRecords"
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 20, 30, 40, 50]"
+      ></mat-paginator>
+    </div>
   </div>
 </div>

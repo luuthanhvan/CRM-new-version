@@ -3,7 +3,8 @@ import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { getEndpoints } from '~core/constants/endpoints.constants';
 import { EndpointService } from '~core/services/endpoint.service';
-import type { SalesOrder } from '~features/sales-order/types/sales-order.type';
+import { SalesOrder } from '~features/sales-order/types/sales-order.type';
+import { paramObj, headerObj } from '~core/services/endpoint.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +16,8 @@ export class SalesOrderService {
 
   addSalesOrder(
     data: SalesOrder,
-    paramsArr?: any[],
-    headerOptions?: any[]
+    paramsArr?: paramObj[],
+    headerOptions?: headerObj[]
   ): Observable<any> {
     return this.endpointService.addEndpoint(
       this.endpoints.salesOrder.v1.salesOrder,
@@ -26,9 +27,9 @@ export class SalesOrderService {
     );
   }
 
-  getListOfSalesOrder(
-    paramsArr?: any[],
-    headerOptions?: any[]
+  getListOfSalesOrders(
+    paramsArr?: paramObj[],
+    headerOptions?: headerObj[]
   ): Observable<SalesOrder[]> {
     return this.endpointService
       .fetchEndpoint(
@@ -45,8 +46,8 @@ export class SalesOrderService {
 
   getSalesOrder(
     orderId: string,
-    paramsArr?: any[],
-    headerOptions?: any[]
+    paramsArr?: paramObj[],
+    headerOptions?: headerObj[]
   ): Observable<SalesOrder> {
     return this.endpointService
       .fetchEndpoint(
@@ -63,8 +64,8 @@ export class SalesOrderService {
   updateSalesOrder(
     orderId: string,
     orderInfo: SalesOrder,
-    paramsArr?: any[],
-    headerOptions?: any[]
+    paramsArr?: paramObj[],
+    headerOptions?: headerObj[]
   ): Observable<any> {
     return this.endpointService
       .updateEndpoint(
@@ -78,8 +79,8 @@ export class SalesOrderService {
 
   deleteSalesOrder(
     orderId: string,
-    paramsArr?: any[],
-    headerOptions?: any[]
+    paramsArr?: paramObj[],
+    headerOptions?: headerObj[]
   ): Observable<any> {
     return this.endpointService
       .deleteEndpoint(
@@ -90,10 +91,25 @@ export class SalesOrderService {
       .pipe(takeUntil(this.stop$));
   }
 
+  bulkDeleteSalesOrder(
+    orderIds: string[],
+    paramsArr?: paramObj[],
+    headerOptions?: headerObj[]
+  ): Observable<any> {
+    return this.endpointService
+      .addEndpoint(
+        this.endpoints.salesOrder.v1.bulkDeleteSalesOrders,
+        paramsArr || [],
+        orderIds,
+        headerOptions
+      )
+      .pipe(takeUntil(this.stop$));
+  }
+
   searchSalesOrder(
     subject: string,
-    paramsArr?: any[],
-    headerOptions?: any[]
+    paramsArr?: paramObj[],
+    headerOptions?: headerObj[]
   ): Observable<any> {
     return this.endpointService.fetchEndpoint(
       `${this.endpoints.salesOrder.v1.searchSalesOrder}/${subject}`,

@@ -21,7 +21,7 @@ export class AppComponent {
   }
 
   loadIcons() {
-    const iconLabels = ['crm'];
+    const iconLabels = ['crm', 'empty-box', 'empty', 'no-data'];
     for (let icon of iconLabels) {
       const path = 'icons/icon-';
       this.matIconRegistry.addSvgIcon(

@@ -98,18 +98,18 @@ class SalesOrderController {
 
   deleteMultiSalesOrders(req, res) {
     try {
-      logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDER);
+      logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDERS);
       const salesOrderIds = req.body;
       SalesOrder.deleteMany({ _id: { $in: salesOrderIds } }).then(() => {
-        logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDER_SUCCESS);
+        logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDERS_SUCCESS);
         return apiResponse.successResponse(
           res,
-          RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDER_SUCCESS
+          RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDERS_SUCCESS
         );
       });
     } catch (err) {
       logger.error(
-        `${RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDER_ERROR} ${err}`
+        `${RESPONSE_MESSAGE.DELETING_LIST_OF_SALES_ORDERS_ERROR} ${err}`
       );
       return apiResponse.ErrorResponse(res, err);
     }

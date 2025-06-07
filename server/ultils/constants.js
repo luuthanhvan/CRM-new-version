@@ -79,11 +79,11 @@ const RESPONSE_MESSAGE = Object.freeze({
   DELETING_SALES_ORDER: "Deleting sales order...",
   DELETING_SALES_ORDER_SUCCESS: "Deleting sales order successfully!",
   DELETING_SALES_ORDER_ERROR: "Error while deleting sales order:",
-  DELETING_LIST_OF_SALES_ORDER: "Deleting list of sales order...",
-  DELETING_LIST_OF_SALES_ORDER_SUCCESS:
-    "Deleting list of sales order successfully!",
-  DELETING_LIST_OF_SALES_ORDER_ERROR:
-    "Error while deleting list of sales order:",
+  DELETING_LIST_OF_SALES_ORDERS: "Deleting list of sales orders...",
+  DELETING_LIST_OF_SALES_ORDERS_SUCCESS:
+    "Deleting list of sales orders successfully!",
+  DELETING_LIST_OF_SALES_ORDERS_ERROR:
+    "Error while deleting list of sales orders:",
   FINDING_SALES_ORDER_BY_CONTACT_NAME: "Finding sales order by contact name...",
   FINDING_SALES_ORDER_BY_CONTACT_NAME_SUCCESS: "Finding sales order by contact name successfully!",
   FINDING_SALES_ORDER_BY_CONTACT_NAME_ERROR: "Error while finding sales order by contact name:",

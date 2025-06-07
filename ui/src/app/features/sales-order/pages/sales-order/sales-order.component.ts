@@ -40,6 +40,7 @@ import { SalesOrderFilterGroupDialogComponent } from '~features/sales-order/comp
 import { SalesOrderFormComponent } from '~features/sales-order/components/sales-order-form/sales-order-form.component';
 import { DialogComponent } from '~core/components/dialog/dialog.component';
 import { SalesOrderDetailsComponent } from '~features/sales-order/components/sales-order-details/sales-order-details.component';
+import { NoDataFoundComponent } from '~core/components/no-data-found/no-data-found.component';
 
 // interface IObjectKeys {
 //   [key: string]: string | number | undefined;
@@ -64,6 +65,7 @@ import { SalesOrderDetailsComponent } from '~features/sales-order/components/sal
     MatSelectModule,
     MatPaginatorModule,
     MatTooltipModule,
+    NoDataFoundComponent,
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   templateUrl: './sales-order.component.html',
@@ -93,15 +95,11 @@ export class SalesOrderComponent implements OnInit {
   // };
   statusNames: string[] = ['Created', 'Approved', 'Delivered', 'Canceled'];
   statusFromDashboard: string = '';
-  checkArray: string[] = [];
-  isDisabled: boolean = true; // it used to show/hide the mass delete button
-  submitted: boolean = false;
-  show: boolean = true;
   dataSource = new MatTableDataSource<SalesOrder>([]);
   totalRecords: number = 0;
-
   status: FormControl = new FormControl('');
   searchText: FormControl = new FormControl('');
+  orderIdsChecked: string[] = [];
 
   constructor(
     private router: Router,
@@ -127,7 +125,7 @@ export class SalesOrderComponent implements OnInit {
   }
 
   loadData() {
-    this.salesOrderService.getListOfSalesOrder().subscribe((data) => {
+    this.salesOrderService.getListOfSalesOrders().subscribe((data) => {
       this.totalRecords = data.length;
       this.dataSource = new MatTableDataSource(data);
       this.dataSource.paginator = this.salesOrderPaginator;
@@ -211,5 +209,56 @@ export class SalesOrderComponent implements OnInit {
     confirmDialogRef.afterClosed().subscribe((result) => {
       this.loadData();
     });
+  }
+
+  onBulkDeleteSalesOrders() {
+    const confirmDialogRef = this.dialog.open(DialogComponent, {
+      disableClose: false,
+    });
+    confirmDialogRef.componentInstance.content = `You want to delete the sales orders?`;
+    confirmDialogRef.componentInstance.sendingSubmitSignal.subscribe(
+      (signal) => {
+        if (signal) {
+          this.salesOrderService
+            .bulkDeleteSalesOrder(
+              this.orderIdsChecked,
+              [],
+              [{ name: 'skipLoading', value: 'true' }]
+            )
+            .pipe(
+              tap((res) => {
+                if (res['status'] === 1) {
+                  this.toastService.showSuccessMessage(
+                    'Delete the Sales orders!'
+                  );
+                } else {
+                  this.toastService.showErrorMessage(
+                    'Delete the Sales orders!'
+                  );
+                }
+              })
+            )
+            .subscribe(() => {
+              confirmDialogRef.close();
+            });
+        }
+      }
+    );
+    confirmDialogRef.afterClosed().subscribe((result) => {
+      this.orderIdsChecked = [];
+      this.loadData();
+    });
+  }
+
+  onCheckboxChecked(event: Event) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    const orderId = (event.target as HTMLInputElement).value;
+    if (isChecked) {
+      // add the checked value to array
+      this.orderIdsChecked.push(orderId);
+    } else {
+      // remove the unchecked value from array
+      this.orderIdsChecked.splice(this.orderIdsChecked.indexOf(orderId), 1);
+    }
   }
 }

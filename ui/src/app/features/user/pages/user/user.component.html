@@ -84,12 +84,15 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
+      <app-no-data-found *ngIf="totalRecords === 0"></app-no-data-found>
     </div>
-    <mat-paginator
-      #userPaginator
-      [length]="totalRecords"
-      [pageSize]="5"
-      [pageSizeOptions]="[5, 10, 20, 30, 40, 50]"
-    ></mat-paginator>
+    <div [hidden]="totalRecords === 0">
+      <mat-paginator
+        #userPaginator
+        [length]="totalRecords"
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 20, 30, 40, 50]"
+      ></mat-paginator>
+    </div>
   </div>
 </div>

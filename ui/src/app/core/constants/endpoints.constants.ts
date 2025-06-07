@@ -21,7 +21,7 @@ export const getEndpoints = () => {
         contact: `${environment.apiBaseUrl}/v1/contact`,
         contactList: `${environment.apiBaseUrl}/v1/contact/list`,
         contactNameList: `${environment.apiBaseUrl}/v1/contact/list/contact-name`,
-        massDeleteContact: `${environment.apiBaseUrl}/v1/contact/delete`,
+        bulkDeleteContacts: `${environment.apiBaseUrl}/v1/contact/delete`,
         searchContact: `${environment.apiBaseUrl}/v1/contact/search`,
       }
     },
@@ -29,7 +29,7 @@ export const getEndpoints = () => {
       v1: {
         salesOrder: `${environment.apiBaseUrl}/v1/sales-order`,
         salesOrderList: `${environment.apiBaseUrl}/v1/sales-order/list`,
-        massDeleteSalesOrder: `${environment.apiBaseUrl}/v1/sales-order/delete`,
+        bulkDeleteSalesOrders: `${environment.apiBaseUrl}/v1/sales-order/delete`,
         searchSalesOrder: `${environment.apiBaseUrl}/v1/sales-order/search`,
       }
     }

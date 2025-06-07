@@ -5,7 +5,7 @@ const logger = require("../configs/winston");
 const { RESPONSE_MESSAGE } = require("../ultils/constants");
 const _ = require("lodash");
 
-class ContactsController {
+class ContactController {
   storeContact(req, res) {
     try {
       logger.info(RESPONSE_MESSAGE.CREATING_NEW_CONTACT);
@@ -120,7 +120,7 @@ class ContactsController {
     }
   }
 
-  multiDeleteContact(req, res) {
+  multiDeleteContacts(req, res) {
     try {
       logger.info(RESPONSE_MESSAGE.DELETING_LIST_OF_CONTACTS);
       let contactIds = req.body;
@@ -158,4 +158,4 @@ class ContactsController {
   }
 }
 
-module.exports = new ContactsController();
+module.exports = new ContactController();

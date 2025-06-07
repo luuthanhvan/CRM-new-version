@@ -12,11 +12,20 @@
       <div class="float-end d-flex align-items-center gap-2">
         <button
           mat-button
-          [disabled]="isDisabled"
-          [ngClass]="isDisabled ? 'btn-disabled' : 'btn-danger'"
+          [disabled]="contactIdsChecked.length === 0"
+          [ngClass]="
+            contactIdsChecked.length === 0 ? 'btn-disabled' : 'btn-danger'
+          "
+          (click)="contactIdsChecked.length !== 0 && onBulkDeleteContacts()"
         >
           <mat-icon>delete</mat-icon>
-          <span>{{ "shared.delete" | translate }}</span>
+          <span>
+            {{
+              contactIdsChecked.length === 0
+                ? ("shared.delete" | translate)
+                : ("shared.deleteSelected" | translate)
+            }}
+          </span>
         </button>
 
         <button class="btn-primary" mat-button (click)="openFormDialog('add')">
@@ -26,11 +35,20 @@
       </div>
     </div>
     <div class="col-12 contacts-list mb-3">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-        <ng-container matColumnDef="check">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        class="mat-elevation-z8"
+        [class.no-data-table]="totalRecords === 0"
+      >
+        <ng-container matColumnDef="select">
           <th mat-header-cell *matHeaderCellDef class="text-center"></th>
           <td class="text-center" mat-cell *matCellDef="let element">
-            <input type="checkbox" [value]="element._id" />
+            <input
+              type="checkbox"
+              [value]="element._id"
+              (change)="onCheckboxChecked($event)"
+            />
           </td>
         </ng-container>
 
@@ -118,12 +136,15 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
+      <app-no-data-found *ngIf="totalRecords === 0"></app-no-data-found>
     </div>
-    <mat-paginator
-      #contactPaginator
-      [length]="totalRecords"
-      [pageSize]="5"
-      [pageSizeOptions]="[5, 10, 20, 30, 40, 50]"
-    ></mat-paginator>
+    <div [hidden]="totalRecords === 0">
+      <mat-paginator
+        #contactPaginator
+        [length]="totalRecords"
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 20, 30, 40, 50]"
+      ></mat-paginator>
+    </div>
   </div>
 </div>

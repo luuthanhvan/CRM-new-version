@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { EndpointFactoryService } from './endpoint-factory.service';
 
-type paramObj = {
+export type paramObj = {
   paramName: string;
   paramVal: string | number | boolean;
 };
 
-type headerObj = {
+export type headerObj = {
   name: string;
   value: string | number | boolean;
 };

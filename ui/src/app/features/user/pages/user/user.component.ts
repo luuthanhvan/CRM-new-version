@@ -16,6 +16,7 @@ import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import type { User } from '~features/user/types/user.type';
 import { UserService } from '~features/user/services/user.service';
 import { UserFormComponent } from '~features/user/components/user-form/user-form.component';
+import { NoDataFoundComponent } from '~core/components/no-data-found/no-data-found.component';
 
 @Component({
   selector: 'app-user',
@@ -33,6 +34,7 @@ import { UserFormComponent } from '~features/user/components/user-form/user-form
     MatNativeDateModule,
     MatTableModule,
     MatPaginatorModule,
+    NoDataFoundComponent,
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   templateUrl: './user.component.html',

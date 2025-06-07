@@ -1,38 +1,38 @@
 const express = require("express");
 const router = express.Router();
-const contactsController = require("../controllers/ContactsController");
+const contactController = require("../controllers/ContactController");
 const authController = require("../controllers/AuthController");
 const jwtHelper = require("../configs/jwt");
 
-router.post("/", jwtHelper.verifyJwtToken, contactsController.storeContact);
+router.post("/", jwtHelper.verifyJwtToken, contactController.storeContact);
 router.get(
   "/list",
   jwtHelper.verifyJwtToken,
   authController.verifyUser,
-  contactsController.getListOfContacts
+  contactController.getListOfContacts
 );
-router.get("/:id", jwtHelper.verifyJwtToken, contactsController.getContact);
-router.put("/:id", jwtHelper.verifyJwtToken, contactsController.updateContact);
+router.get("/:id", jwtHelper.verifyJwtToken, contactController.getContact);
+router.put("/:id", jwtHelper.verifyJwtToken, contactController.updateContact);
 router.delete(
   "/:id",
   jwtHelper.verifyJwtToken,
-  contactsController.deleteContact
+  contactController.deleteContact
 );
 router.post(
   "/delete",
   jwtHelper.verifyJwtToken,
-  contactsController.multiDeleteContact
+  contactController.multiDeleteContacts
 );
 router.get(
   "/search/:contactName",
   jwtHelper.verifyJwtToken,
-  contactsController.findContact
+  contactController.findContact
 );
 router.get(
   "/list/contact-name",
   jwtHelper.verifyJwtToken,
   authController.verifyUser,
-  contactsController.getListOfContactNames
+  contactController.getListOfContactNames
 );
 
 module.exports = router;
