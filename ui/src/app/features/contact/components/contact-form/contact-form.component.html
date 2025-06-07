@@ -1,67 +1,95 @@
 <div id="contact-form-wrapper">
   <h2 mat-dialog-title>
-    {{ this.data.action === "add" ? "Create new Contact" : "Edit the Contact" }}
+    {{
+      this.data.action === "add"
+        ? ("contact.createNewContact" | translate)
+        : ("contact.editContact" | translate)
+    }}
   </h2>
   <mat-dialog-content>
     <form class="mx-3 my-4" [formGroup]="contactForm">
       <div class="row">
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Contact name</mat-label>
+          <mat-label>
+            {{ "contact.table.contactName" | translate }}
+          </mat-label>
           <input matInput formControlName="contactName" />
           @if (contactForm.controls['contactName'].errors?.['required']) {
-          <mat-error>*Contact name is required</mat-error>
+          <mat-error>
+            {{ "shared.error.contactNameRequired" | translate }}
+          </mat-error>
           }
         </mat-form-field>
 
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Salutation</mat-label>
+          <mat-label>
+            {{ "contact.table.salutation" | translate }}
+          </mat-label>
           <mat-select formControlName="salutation">
             <mat-option *ngFor="let salut of salutations" [value]="salut">{{
               salut
             }}</mat-option>
           </mat-select>
           @if (contactForm.controls['salutation'].errors?.['required']) {
-          <mat-error>*Salutation is required</mat-error>
+          <mat-error>
+            {{ "shared.error.salutionRequired" | translate }}
+          </mat-error>
           }
         </mat-form-field>
       </div>
 
       <div class="row my-3">
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Mobile phone</mat-label>
+          <mat-label>
+            {{ "contact.table.phone" | translate }}
+          </mat-label>
           <input matInput formControlName="mobilePhone" />
           @if (contactForm.controls['mobilePhone'].errors?.['required']) {
-          <mat-error>*Mobile phone is required</mat-error>
+          <mat-error>
+            {{ "shared.error.phoneRequired" | translate }}
+          </mat-error>
           } @if (contactForm.controls['mobilePhone'].errors?.['pattern']) {
-          <mat-error>*Invalid mobile phone number</mat-error>
+          <mat-error>
+            {{ "shared.error.phoneInvalid" | translate }}
+          </mat-error>
           }
         </mat-form-field>
 
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Email</mat-label>
+          <mat-label>
+            {{ "contact.table.email" | translate }}
+          </mat-label>
           <input matInput formControlName="email" />
-          <mat-hint>{{ "user.emailHint" | translate }}</mat-hint>
+          <mat-hint>{{ "shared.hint.email" | translate }}</mat-hint>
           @if (contactForm.controls['email'].errors?.['email']) {
-          <mat-error>*Invalid email address</mat-error>
+          <mat-error>
+            {{ "shared.error.emailInvalid" | translate }}
+          </mat-error>
           }
         </mat-form-field>
       </div>
 
       <div class="row my-3">
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Organization</mat-label>
+          <mat-label>
+            {{ "contact.table.organization" | translate }}
+          </mat-label>
           <input matInput formControlName="organization" />
         </mat-form-field>
 
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Lead source</mat-label>
+          <mat-label>
+            {{ "contact.table.leadSrc" | translate }}
+          </mat-label>
           <mat-select formControlName="leadSrc">
             <mat-option *ngFor="let src of leadSources" [value]="src">
               {{ src }}
             </mat-option>
           </mat-select>
           @if (contactForm.controls['leadSrc'].errors?.['required']) {
-          <mat-error>*Lead source is required</mat-error>
+          <mat-error>
+            {{ "shared.error.leadSrcRequired" | translate }}
+          </mat-error>
           }
         </mat-form-field>
       </div>
@@ -72,22 +100,25 @@
           appearance="outline"
           *ngIf="assignedToUsers && assignedToUsers.length > 0"
         >
-          <mat-label>Assigned to</mat-label>
+          <mat-label>
+            {{ "contact.table.assignedTo" | translate }}
+          </mat-label>
           <mat-select formControlName="assignedTo">
-            <mat-option
-              *ngFor="let user of assignedToUsers"
-              [value]="user"
-            >
+            <mat-option *ngFor="let user of assignedToUsers" [value]="user">
               {{ user }}
             </mat-option>
           </mat-select>
           @if (contactForm.controls['assignedTo'].errors?.['required']) {
-          <mat-error>*Assigned to is required</mat-error>
+          <mat-error>
+            {{ "shared.error.assignedToRequired" | translate }}
+          </mat-error>
           }
         </mat-form-field>
 
         <mat-form-field class="col-6" appearance="outline">
-          <mat-label>Date of birth</mat-label>
+          <mat-label>
+            {{ "contact.table.dob" | translate }}
+          </mat-label>
           <input matInput [matDatepicker]="dobPicker" formControlName="dob" />
           <mat-datepicker-toggle
             matSuffix
@@ -99,14 +130,18 @@
 
       <div class="row my-3">
         <mat-form-field class="col-12" appearance="outline" id="address">
-          <mat-label>Address</mat-label>
+          <mat-label>
+            {{ "contact.table.address" | translate }}
+          </mat-label>
           <input matInput formControlName="address" />
         </mat-form-field>
       </div>
 
       <div class="row">
         <mat-form-field class="col-12" appearance="outline">
-          <mat-label>Description</mat-label>
+          <mat-label>
+            {{ "contact.table.description" | translate }}
+          </mat-label>
           <textarea matInput formControlName="description"></textarea>
         </mat-form-field>
       </div>
@@ -114,7 +149,7 @@
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>
-      {{ "action.cancel" | translate }}
+      {{ "shared.cancel" | translate }}
     </button>
     <button
       mat-button
@@ -122,7 +157,7 @@
       (click)="!contactForm.invalid && onSubmit()"
       [ngClass]="contactForm.invalid ? 'btn-disabled' : 'btn-primary'"
     >
-      {{ "action.submit" | translate }}
+      {{ "shared.submit" | translate }}
     </button>
   </mat-dialog-actions>
 </div>

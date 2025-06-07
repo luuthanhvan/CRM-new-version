@@ -16,6 +16,7 @@ import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Observable, BehaviorSubject, of, combineLatest } from 'rxjs';
 import {
   map,
@@ -62,6 +63,7 @@ import { SalesOrderDetailsComponent } from '~features/sales-order/components/sal
     MatCardModule,
     MatSelectModule,
     MatPaginatorModule,
+    MatTooltipModule,
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   templateUrl: './sales-order.component.html',

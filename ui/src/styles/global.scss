@@ -164,3 +164,6 @@ mat-progress-spinner {
 .mat-mdc-list-item {
   border-bottom: 1px solid $grey-2;
 }
+.border-none {
+  border: unset !important;
+}

@@ -1,90 +1,73 @@
 <div id="user-wrapper">
   <div class="row mx-4 my-2">
     <div>
-      <h2 class="float-start" id="user-heading">
+      <h2 class="float-start">
         {{ "user.title" | translate }}
       </h2>
     </div>
     <div class="col-12 mb-3">
-      <h3 class="float-start my-1">{{ "user.listOfUsers" | translate }}</h3>
-      <div
-        id="user-button-row"
-        class="float-end d-flex align-items-center gap-2"
-      >
+      <h3 class="float-start my-1">
+        {{ "user.listOfUsers" | translate }}
+      </h3>
+      <div class="float-end d-flex align-items-center gap-2">
         <button mat-button class="btn-primary" (click)="openUserDialog('add')">
           <mat-icon>add</mat-icon>
-          <span>Create new User</span>
+          <span>
+            {{ "user.createNewUser" | translate }}
+          </span>
         </button>
       </div>
     </div>
-    <div class="col-12 user-list">
-      <table
-        id="list-of-users"
-        mat-table
-        [dataSource]="dataSource"
-        class="mat-elevation-z8"
-      >
-        <!-- name column -->
+    <div class="col-12 user-list mb-3">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="name">
           <th class="text-left ps-4" mat-header-cell *matHeaderCellDef>
-            {{ "user.name" | translate }}
+            {{ "user.table.name" | translate }}
           </th>
           <td class="text-left ps-4" mat-cell *matCellDef="let element">
             {{ element.name }}
           </td>
         </ng-container>
-
-        <!-- email column -->
         <ng-container matColumnDef="email">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "user.email" | translate }}
+            {{ "user.table.email" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.email }}
           </td>
         </ng-container>
-
-        <!-- Phone column -->
         <ng-container matColumnDef="phone">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "user.phone" | translate }}
+            {{ "user.table.phone" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.phone }}
           </td>
         </ng-container>
-
-        <!-- admin column -->
         <ng-container matColumnDef="isAdmin">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "user.admin" | translate }}
+            {{ "user.table.admin" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.isAdmin ? "Admin" : "User" }}
           </td>
         </ng-container>
-
-        <!-- active column -->
         <ng-container matColumnDef="isActive">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "user.active" | translate }}
+            {{ "user.table.active" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.isActive ? "Enabled " : "Disabled" }}
           </td>
         </ng-container>
-
-        <!-- Created time column -->
         <ng-container matColumnDef="createdTime">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "date.createdTime" | translate }}
+            {{ "user.table.createdTime" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.createdTime | date : "medium" }}
           </td>
         </ng-container>
-
-        <!-- Modify user infomation column -->
         <!-- <ng-container matColumnDef="modify">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
             {{ "action.modify" | translate }}
@@ -98,7 +81,6 @@
             </mat-icon>
           </td>
         </ng-container> -->
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>

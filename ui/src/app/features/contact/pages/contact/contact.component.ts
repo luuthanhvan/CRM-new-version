@@ -16,6 +16,7 @@ import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Observable, BehaviorSubject, of, combineLatest } from 'rxjs';
 import {
   map,
@@ -31,6 +32,7 @@ import type { Contact } from '~features/contact/types/contact.type';
 import moment from 'moment';
 import { ContactFormComponent } from '~features/contact/components/contact-form/contact-form.component';
 import { DialogComponent } from '~core/components/dialog/dialog.component';
+import { ContactDetailsComponent } from '~features/contact/components/contact-details/contact-details.component';
 
 @Component({
   selector: 'app-contact',
@@ -50,6 +52,7 @@ import { DialogComponent } from '~core/components/dialog/dialog.component';
     MatTableModule,
     MatSelectModule,
     MatPaginatorModule,
+    MatTooltipModule,
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   templateUrl: './contact.component.html',
@@ -128,6 +131,17 @@ export class ContactComponent implements OnInit {
     formDialogRef.afterClosed().subscribe((result) => {
       this.loadData();
     });
+  }
+
+  openContactDetailsDialog(contactId: string) {
+    const contactDetailsDialogRef = this.dialog.open(ContactDetailsComponent, {
+      disableClose: true,
+      width: '600px',
+      data: {
+        contactId,
+      },
+    });
+    contactDetailsDialogRef.afterClosed().subscribe((result) => {});
   }
 
   onDelete(contactId: string, contactName: string) {

@@ -1,34 +1,15 @@
 <div id="sales-order-wrapper">
   <div class="row mx-4 my-2">
     <div>
-      <h2 class="float-start" id="contacts-heading">
-        {{ "shared.salesOrder" | translate }}
+      <h2 class="float-start">
+        {{ "salesOrder.title" | translate }}
       </h2>
-      <!-- <form class="float-end">
-        <button
-          mat-button
-          (click)="applySelectFilter(searchText.value, 'contactName')"
-        >
-          <mat-icon>search</mat-icon>
-        </button>
-        <mat-form-field>
-          <input
-            matInput
-            placeholder="{{ 'action.search' | translate }}"
-            [formControl]="searchText"
-          />
-        </mat-form-field>
-        <button mat-button (click)="reset()">
-          <mat-icon>clear</mat-icon>
-        </button>
-      </form> -->
     </div>
     <div class="col-12 mb-3">
-      <h3 class="float-start my-1">List of Sales order</h3>
-      <div
-        id="sales-order-button-row"
-        class="float-end d-flex align-items-center gap-2"
-      >
+      <h3 class="float-start my-1">
+        {{ "salesOrder.listOfSalesOrder" | translate }}
+      </h3>
+      <div class="float-end d-flex align-items-center gap-2">
         <!-- <div class="search-field">
           <mat-form-field appearance="outline">
             <mat-icon>search</mat-icon>
@@ -46,7 +27,7 @@
           [disabled]="isDisabled"
         >
           <mat-icon>delete</mat-icon>
-          <span>{{ "action.delete" | translate }}</span>
+          <span>{{ "shared.delete" | translate }}</span>
         </button>
         <!-- <button
           mat-button
@@ -58,13 +39,14 @@
         </button> -->
         <button mat-button class="btn-primary" (click)="openFormDialog('add')">
           <mat-icon>add</mat-icon>
-          <span>Create new Sales order</span>
+          <span>
+            {{ "salesOrder.createNewSalesOrder" | translate }}
+          </span>
         </button>
       </div>
     </div>
-    <div class="col-12 sales-order-list">
+    <div class="col-12 sales-order-list mb-3">
       <table
-        id="list-of-sales-order"
         mat-table
         [dataSource]="dataSource"
         class="mat-elevation-z8"
@@ -78,16 +60,21 @@
 
         <ng-container matColumnDef="subject">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "salesOrder.subject" | translate }}
+            {{ "salesOrder.table.subject" | translate }}
           </th>
-          <td class="text-center pointer" mat-cell *matCellDef="let element" (click)="openSalesOrderDetailsDialog(element._id)">
+          <td
+            class="text-center pointer"
+            mat-cell
+            *matCellDef="let element"
+            (click)="openSalesOrderDetailsDialog(element._id)"
+          >
             {{ element.subject }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="contactName">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            Contact name
+            {{ "salesOrder.table.contactName" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.contactName }}
@@ -96,7 +83,7 @@
 
         <ng-container matColumnDef="status">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "salesOrder.status" | translate }}
+            {{ "salesOrder.table.status" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.status }}
@@ -105,7 +92,7 @@
 
         <ng-container matColumnDef="total">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "salesOrder.total" | translate }}
+            {{ "salesOrder.table.total" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.total }}
@@ -114,7 +101,7 @@
 
         <ng-container matColumnDef="assignedTo">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "shared.assignedTo" | translate }}
+            {{ "salesOrder.table.assignedTo" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.assignedTo }}
@@ -123,7 +110,7 @@
 
         <ng-container matColumnDef="createdTime">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "date.createdTime" | translate }}
+            {{ "salesOrder.table.createdTime" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.createdTime | date : "medium" }}
@@ -132,7 +119,7 @@
 
         <ng-container matColumnDef="updatedTime">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "date.updatedTime" | translate }}
+            {{ "salesOrder.table.updatedTime" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             {{ element.updatedTime | date : "medium" }}
@@ -141,17 +128,19 @@
 
         <ng-container matColumnDef="actions">
           <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ "action.actions" | translate }}
+            {{ "shared.actions" | translate }}
           </th>
           <td class="text-center" mat-cell *matCellDef="let element">
             <mat-icon
               class="text-warning pointer mx-1"
+              [matTooltip]="'shared.edit' | translate"
               (click)="openFormDialog('edit', element._id)"
             >
               edit
             </mat-icon>
             <mat-icon
               class="text-danger pointer mx-1"
+              [matTooltip]="'shared.delete' | translate"
               (click)="onDelete(element._id, element.subject)"
             >
               delete

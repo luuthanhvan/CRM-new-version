@@ -11,6 +11,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { AuthService } from '~features/authentication/services/auth.service';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +22,7 @@ import { ToastService } from '~core/services/toast.service';
   imports: [
     CommonModule,
     FormsModule,
+    TranslateModule,
     ReactiveFormsModule,
     MatInputModule,
     MatButton,

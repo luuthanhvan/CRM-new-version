@@ -1,84 +1,109 @@
 {
-  "contacts": {
-    "salutation": "Salutation",
-    "organization": "Organization",
-    "dob": "Date of birth",
-    "address": "Address",
-    "leadSrc": "Lead source",
-    "tableTitle": "List of Customer",
-    "createNewCustomer": "Create new customer",
-    "editCustomerInfo": "Edit customer information",
-    "contactDetails": "Contact details"
-  },
-  "salesOrder": {
-    "subject": "Subject",
-    "status": "Status",
-    "total": "Total",
-    "tableTitle": "Sales order information",
-    "createNewSalesOrder": "Create new sales order",
-    "editSalesOrderInfo": "Edit sales order information",
-    "salesOrderDetails": "Sales order details"
-  },
-  "user": {
-    "title": "User Management",
-    "createNewUser": "Create new user",
-    "editUserInfo": "Edit user information",
-    "listOfUsers": "List of Users",
-    "name": "Name",
-    "username": "Username",
-    "password": "Password",
-    "confirmPassword": "Confirm password",
-    "admin": "Admin",
-    "active": "Active",
-    "email": "Email",
-    "phone": "Phone",
-    "emailHint": "Example: abc@gmail.com",
-    "error": {
-      "nameRequired": "*Name is required!",
-      "usernameRequired": "*Username is required!",
-      "passwordRequired": "*Password is required!",
-      "confirmPasswordRequired": "*Confirm password is required!",
-      "emailRequired": "*Email is required!",
-      "phoneRequired": "*Phone is required!",
-      "passwordMinLength": "*Password must be at least 6 characters!",
-      "passwordsMustMatch": "*Password and confirm password must match!",
-      "invalidEmail": "*Invalid email address!",
-      "invalidPhone": "*Invalid phone number!"
+  "contact": {
+    "title": "Contacts",
+    "createNewContact": "Create new Contact",
+    "editContact": "Edit the Contact",
+    "contactDetails": "Contact details",
+    "table": {
+      "title": "List of Contacts",
+      "contactName": "Contact name",
+      "salutation": "Salutation",
+      "phone": "Phone number",
+      "email": "Email",
+      "organization": "Organization",
+      "dob": "Date of birth",
+      "address": "Address",
+      "leadSrc": "Lead source",
+      "assignedTo": "Assigned to",
+      "creator": "Creator",
+      "description": "Description",
+      "createdTime": "Created time",
+      "updatedTime": "Updated time"
     }
   },
-  "action": {
+  "salesOrder": {
+    "title": "Sales order",
+    "createNewSalesOrder": "Create new Sales order",
+    "editSalesOrderInfo": "Edit the Sales order",
+    "salesOrderDetails": "Sales order details",
+    "listOfSalesOrder": "List of Sales order",
+    "table": {
+      "subject": "Subject",
+      "contactName": "Contact name",
+      "status": "Status",
+      "total": "Total",
+      "assignedTo": "Assigned to",
+      "creator": "Creator",
+      "description": "Description",
+      "createdTime": "Created time",
+      "updatedTime": "Updated time"
+    }
+  },
+  "user": {
+    "title": "Users",
+    "createNewUser": "Create new User",
+    "editUserInfo": "Edit the User",
+    "listOfUsers": "List of Users",
+    "userDetails": "User details",
+    "table": {
+      "name": "Name",
+      "username": "Username",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "admin": "Admin",
+      "active": "Active",
+      "email": "Email",
+      "phone": "Phone number",
+      "createdTime":"Created time"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "shared": {
     "modify": "Modify",
     "delete": "Delete",
+    "deleteSelected": "Delete selected items",
+    "edit": "Edit",
     "filters": "Filters",
     "save": "Save",
     "cancel": "Cancel",
+    "close": "Close",
     "ok": "OK",
     "apply": "Apply",
     "back": "Back",
     "submit": "Submit",
     "create": "Create",
     "changePassword": "Change password",
+    "login": "Login",
+    "register": "Register",
     "signout": "Sign-out",
     "language": "Language",
-    "search": "Enter contact name",
-    "actions": "Actions"
-  },
-  "date": {
-    "createdTime": "Created time",
-    "updatedTime": "Updated time",
-    "from": "From",
-    "to": "To"
-  },
-  "shared": {
-    "dashboard": "Dashboard",
-    "contacts": "Contacts",
-    "salesOrder": "Sales order",
-    "userManagement": "User",
-    "email": "Email",
-    "name": "Name",
-    "phone": "Phone",
-    "assignedTo": "Assigned to",
-    "description": "Description",
-    "creator": "Creator"
+    "actions": "Actions",
+    "noAccount": "Don't have an account?",
+    "missingValue": "-",
+    "hint": {
+      "email": "Example: abc@gmail.com"
+    },
+    "error": {
+      "nameRequired": "*Name is required!",
+      "usernameRequired": "*Username is required!",
+      "passwordRequired": "*Password is required!",
+      "passwordMinLength": "*Password must be at least 6 characters!",
+      "passwordsMustMatch": "*Password and confirm password must match!",
+      "confirmPasswordRequired": "*Confirm password is required!",
+      "emailRequired": "*Email is required!",
+      "emailInvalid": "*Invalid email address!",
+      "phoneRequired": "*Phone number is required!",
+      "phoneInvalid": "*Invalid phone number!",
+      "contactNameRequired": "*Contact name is required",
+      "salutionRequired": "*Salutation is required",
+      "leadSrcRequired": "*Lead source is required",
+      "assignedToRequired": "*Assigned to is required",
+      "subjectRequired": "*Subject is required",
+      "statusRequired": "*Status is required",
+      "totalRequired": "*Total is required",
+      "totalInvalid": "*Total must be a number"
+    }
   }
 }

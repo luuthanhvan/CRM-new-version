@@ -7,17 +7,17 @@
   </div>
   <div>
     <button mat-button [matMenuTriggerFor]="menu">
-      <mat-icon>menu</mat-icon>
+      <mat-icon> menu </mat-icon>
     </button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item [matMenuTriggerFor]="language">
-        {{ "action.language" | translate }}
+        {{ "shared.language" | translate }}
       </button>
       <button mat-menu-item (click)="openChangePwdDialog()">
-        {{ "action.changePassword" | translate }}
+        {{ "shared.changePassword" | translate }}
       </button>
       <button mat-menu-item (click)="signout()">
-        {{ "action.signout" | translate }}
+        {{ "shared.signout" | translate }}
       </button>
     </mat-menu>
     <mat-menu #language="matMenu">
@@ -39,8 +39,10 @@
       routerLink="/dashboard"
       routerLinkActive="active"
     >
-      <mat-icon>dashboard</mat-icon>
-      <span>{{ "shared.dashboard" | translate }}</span>
+      <mat-icon> dashboard </mat-icon>
+      <span>
+        {{ "dashboard.title" | translate }}
+      </span>
     </button>
     <button
       mat-button
@@ -48,8 +50,10 @@
       routerLink="/contact"
       routerLinkActive="active"
     >
-      <mat-icon>contact_page</mat-icon>
-      <span>{{ "shared.contacts" | translate }}</span>
+      <mat-icon> contact_page </mat-icon>
+      <span>
+        {{ "contact.title" | translate }}
+      </span>
     </button>
     <button
       mat-button
@@ -57,8 +61,10 @@
       routerLink="/sales-order"
       routerLinkActive="active"
     >
-      <mat-icon>real_estate_agent</mat-icon>
-      <span>{{ "shared.salesOrder" | translate }}</span>
+      <mat-icon> real_estate_agent </mat-icon>
+      <span>
+        {{ "salesOrder.title" | translate }}
+      </span>
     </button>
 
     <div *ngIf="isAdminUser; then admin; else user"></div>
@@ -70,8 +76,10 @@
         routerLink="/user"
         routerLinkActive="active"
       >
-        <mat-icon>manage_accounts</mat-icon>
-        <span>{{ "shared.userManagement" | translate }}</span>
+        <mat-icon> manage_accounts </mat-icon>
+        <span>
+          {{ "user.title" | translate }}
+        </span>
       </button>
     </ng-template>
 
