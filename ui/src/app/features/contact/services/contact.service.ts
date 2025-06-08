@@ -123,12 +123,11 @@ export class ContactService {
   }
 
   searchContacts(
-    subject: string,
     paramsArr?: paramObj[],
     headerOptions?: headerObj[]
   ): Observable<any> {
     return this.endpointService.fetchEndpoint(
-      `${this.endpoints.contact.v1.searchContact}/${subject}`,
+      this.endpoints.contact.v1.searchContact,
       paramsArr || [],
       headerOptions
     );

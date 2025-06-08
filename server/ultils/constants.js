@@ -84,9 +84,9 @@ const RESPONSE_MESSAGE = Object.freeze({
     "Deleting list of sales orders successfully!",
   DELETING_LIST_OF_SALES_ORDERS_ERROR:
     "Error while deleting list of sales orders:",
-  FINDING_SALES_ORDER_BY_CONTACT_NAME: "Finding sales order by contact name...",
-  FINDING_SALES_ORDER_BY_CONTACT_NAME_SUCCESS: "Finding sales order by contact name successfully!",
-  FINDING_SALES_ORDER_BY_CONTACT_NAME_ERROR: "Error while finding sales order by contact name:",
+  FINDING_SALES_ORDER: "Finding sales order...",
+  FINDING_SALES_ORDER_SUCCESS: "Finding sales order successfully!",
+  FINDING_SALES_ORDER_ERROR: "Error while finding sales order:",
   CREATING_NEW_CONTACT: "Creating new contact...",
   CREATING_NEW_CONTACT_SUCCESS: "Creating new contact successfully!",
   CREATING_NEW_CONTACT_ERROR: "Error while creating new contact:",
@@ -108,9 +108,9 @@ const RESPONSE_MESSAGE = Object.freeze({
   DELETING_LIST_OF_CONTACTS: "Deleting list of contacts...",
   DELETING_LIST_OF_CONTACTS_SUCCESS: "Deleting list of contacts successfully!",
   DELETING_LIST_OF_CONTACTS_ERROR: "Error while deleting list of contacts:",
-  FINDING_CONTACT_BY_NAME: "Finding contact by contact name...",
-  FINDING_CONTACT_BY_NAME_SUCCESS: "Finding contact by contact name successfully!",
-  FINDING_CONTACT_BY_NAME_ERROR: "Error while finding contact by contact name:",
+  FINDING_CONTACT: "Finding contacts...",
+  FINDING_CONTACT_SUCCESS: "Finding contacts successfully!",
+  FINDING_CONTACT_ERROR: "Error while finding contacts:",
 });
 
 module.exports = {

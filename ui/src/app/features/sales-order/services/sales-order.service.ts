@@ -106,13 +106,12 @@ export class SalesOrderService {
       .pipe(takeUntil(this.stop$));
   }
 
-  searchSalesOrder(
-    subject: string,
+  searchSalesOrders(
     paramsArr?: paramObj[],
     headerOptions?: headerObj[]
   ): Observable<any> {
     return this.endpointService.fetchEndpoint(
-      `${this.endpoints.salesOrder.v1.searchSalesOrder}/${subject}`,
+      this.endpoints.salesOrder.v1.searchSalesOrder,
       paramsArr || [],
       headerOptions
     );

@@ -4,6 +4,7 @@
     "createNewContact": "Create new Contact",
     "editContact": "Edit the Contact",
     "contactDetails": "Contact details",
+    "searchByContactName": "Search by Contact name",
     "table": {
       "title": "List of Contacts",
       "contactName": "Contact name",
@@ -27,6 +28,7 @@
     "editSalesOrderInfo": "Edit the Sales order",
     "salesOrderDetails": "Sales order details",
     "listOfSalesOrder": "List of Sales order",
+    "searchBySubject": "Search by Subject",
     "table": {
       "subject": "Subject",
       "contactName": "Contact name",
@@ -69,6 +71,7 @@
     "save": "Save",
     "cancel": "Cancel",
     "close": "Close",
+    "clear": "Clear",
     "ok": "OK",
     "apply": "Apply",
     "back": "Back",

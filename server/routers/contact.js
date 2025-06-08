@@ -11,28 +11,24 @@ router.get(
   authController.verifyUser,
   contactController.getListOfContacts
 );
-router.get("/:id", jwtHelper.verifyJwtToken, contactController.getContact);
-router.put("/:id", jwtHelper.verifyJwtToken, contactController.updateContact);
-router.delete(
-  "/:id",
-  jwtHelper.verifyJwtToken,
-  contactController.deleteContact
-);
+router.get("/search", jwtHelper.verifyJwtToken, contactController.findContacts);
 router.post(
   "/delete",
   jwtHelper.verifyJwtToken,
   contactController.multiDeleteContacts
 );
 router.get(
-  "/search/:contactName",
-  jwtHelper.verifyJwtToken,
-  contactController.findContact
-);
-router.get(
   "/list/contact-name",
   jwtHelper.verifyJwtToken,
   authController.verifyUser,
   contactController.getListOfContactNames
+);
+router.get("/:id", jwtHelper.verifyJwtToken, contactController.getContact);
+router.put("/:id", jwtHelper.verifyJwtToken, contactController.updateContact);
+router.delete(
+  "/:id",
+  jwtHelper.verifyJwtToken,
+  contactController.deleteContact
 );
 
 module.exports = router;

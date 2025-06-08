@@ -15,6 +15,16 @@ router.get(
   authController.verifyUser,
   salesOrderController.getListOfSalesOrders
 );
+router.post(
+  "/delete",
+  jwtHelper.verifyJwtToken,
+  salesOrderController.deleteMultiSalesOrders
+);
+router.get(
+  "/search",
+  jwtHelper.verifyJwtToken,
+  salesOrderController.findSalesOrders
+);
 router.get(
   "/:id",
   jwtHelper.verifyJwtToken,
@@ -29,16 +39,6 @@ router.delete(
   "/:id",
   jwtHelper.verifyJwtToken,
   salesOrderController.deleteSalesOrder
-);
-router.post(
-  "/delete",
-  jwtHelper.verifyJwtToken,
-  salesOrderController.deleteMultiSalesOrders
-);
-router.get(
-  "/search/:contactName",
-  jwtHelper.verifyJwtToken,
-  salesOrderController.findSalesOrderByContactName
 );
 
 module.exports = router;

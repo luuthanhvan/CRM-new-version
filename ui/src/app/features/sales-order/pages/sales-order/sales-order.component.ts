@@ -42,9 +42,16 @@ import { DialogComponent } from '~core/components/dialog/dialog.component';
 import { SalesOrderDetailsComponent } from '~features/sales-order/components/sales-order-details/sales-order-details.component';
 import { NoDataFoundComponent } from '~core/components/no-data-found/no-data-found.component';
 
-// interface IObjectKeys {
-//   [key: string]: string | number | undefined;
-// }
+interface FilterCriteria {
+  subject?: string;
+  status?: string;
+  assignedTo?: string;
+  contactName?: string;
+  createdTimeFrom?: object;
+  createdTimeTo?: object;
+  updatedTimeFrom?: object;
+  updatedTimeTo?: object;
+}
 
 @Component({
   selector: 'app-sales-order',
@@ -84,21 +91,14 @@ export class SalesOrderComponent implements OnInit {
     'updatedTime',
     'actions',
   ];
-  // displayedHeaders: IObjectKeys  = {
-  //   subject: 'Subject',
-  //   contactName: 'Contact Name',
-  //   status: 'Status',
-  //   total: 'Total',
-  //   assignedTo: 'Assigned To',
-  //   createdTime: 'Created Time',
-  //   updatedTime: 'Updated Time',
-  // };
   statusNames: string[] = ['Created', 'Approved', 'Delivered', 'Canceled'];
   statusFromDashboard: string = '';
   dataSource = new MatTableDataSource<SalesOrder>([]);
   totalRecords: number = 0;
-  status: FormControl = new FormControl('');
   searchText: FormControl = new FormControl('');
+  search$!: Observable<SalesOrder[]>;
+  filterSubject: BehaviorSubject<FilterCriteria> =
+    new BehaviorSubject<FilterCriteria>({});
   orderIdsChecked: string[] = [];
 
   constructor(
@@ -125,14 +125,41 @@ export class SalesOrderComponent implements OnInit {
   }
 
   loadData() {
-    this.salesOrderService.getListOfSalesOrders().subscribe((data) => {
-      this.totalRecords = data.length;
-      this.dataSource = new MatTableDataSource(data);
-      this.dataSource.paginator = this.salesOrderPaginator;
-    });
+    this.search$ = this.searchText.valueChanges.pipe(
+      startWith(''),
+      tap((subject) => {
+        // handle the search value before doing any futher steps
+      }),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((subject) =>
+        subject
+          ? this.salesOrderService.searchSalesOrders([
+              { paramName: 'subject', paramVal: subject },
+            ])
+          : of(null)
+      )
+    );
+
+    combineLatest([this.salesOrderService.getListOfSalesOrders(), this.search$])
+      .pipe(
+        map(([contacts, searchResult]) => {
+          const sourceData = searchResult
+            ? (searchResult as { [key: string]: any })['data']
+            : contacts;
+          return sourceData;
+        })
+      )
+      .subscribe((data) => {
+        this.totalRecords = data.length;
+        this.dataSource = new MatTableDataSource(data);
+        this.dataSource.paginator = this.salesOrderPaginator;
+      });
   }
 
-  reset() {
+  resetData() {
+    this.searchText = new FormControl('');
+    this.filterSubject.next({});
     this.loadData();
   }
 
@@ -260,5 +287,10 @@ export class SalesOrderComponent implements OnInit {
       // remove the unchecked value from array
       this.orderIdsChecked.splice(this.orderIdsChecked.indexOf(orderId), 1);
     }
+  }
+
+  applySelectFilter(filterValue: string, filterBy: string) {
+    const currentFilterObj = this.filterSubject.getValue();
+    this.filterSubject.next({ ...currentFilterObj, [filterBy]: filterValue });
   }
 }

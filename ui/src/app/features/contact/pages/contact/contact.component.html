@@ -34,6 +34,23 @@
         </button>
       </div>
     </div>
+    <div class="col-12 mb-3 search-field">
+      <mat-form-field appearance="outline">
+        <mat-icon>search</mat-icon>
+        <input
+          matInput
+          placeholder="{{ 'contact.searchByContactName' | translate }}"
+          [formControl]="searchText"
+        />
+        <mat-icon
+          class="pointer icon-clear"
+          [matTooltip]="'shared.clear' | translate"
+          (click)="resetData()"
+        >
+          clear
+        </mat-icon>
+      </mat-form-field>
+    </div>
     <div class="col-12 contacts-list mb-3">
       <table
         mat-table

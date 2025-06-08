@@ -4,6 +4,7 @@ const apiResponse = require("../ultils/apiResponse");
 const logger = require("../configs/winston");
 const { RESPONSE_MESSAGE } = require("../ultils/constants");
 const _ = require("lodash");
+const contactService = require("../services/ContactService");
 
 class ContactController {
   storeContact(req, res) {
@@ -52,7 +53,8 @@ class ContactController {
       const query = req.isAdmin ? {} : { assignedTo: req.name };
       Contacts.find(query).then((data) => {
         logger.info(RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACT_NAMES_SUCCESS);
-        const names = data.length > 0 ? _.map(data, _.property("contactName")) : [];
+        const names =
+          data.length > 0 ? _.map(data, _.property("contactName")) : [];
         return apiResponse.successResponseWithData(
           res,
           RESPONSE_MESSAGE.FETCHING_LIST_OF_CONTACT_NAMES_SUCCESS,
@@ -139,20 +141,20 @@ class ContactController {
     }
   }
 
-  findContact(req, res) {
+  findContacts(req, res) {
     try {
-      logger.info(RESPONSE_MESSAGE.FINDING_CONTACT_BY_NAME);
-      let contactName = req.params.contactName;
-      Contacts.find({ contactName: contactName }).then((contacts) => {
-        logger.info(RESPONSE_MESSAGE.FINDING_CONTACT_BY_NAME_SUCCESS);
+      logger.info(RESPONSE_MESSAGE.FINDING_CONTACT);
+      const query = contactService.getContactSearchQuery(req.query);
+      Contacts.find(query).then((data) => {
+        logger.info(RESPONSE_MESSAGE.FINDING_CONTACT_SUCCESS);
         return apiResponse.successResponseWithData(
           res,
-          RESPONSE_MESSAGE.FINDING_CONTACT_BY_NAME_SUCCESS,
-          contacts
+          RESPONSE_MESSAGE.FINDING_CONTACT_SUCCESS,
+          data
         );
       });
     } catch (err) {
-      logger.error(`${RESPONSE_MESSAGE.FINDING_CONTACT_BY_NAME_ERROR} ${err}`);
+      logger.error(`${RESPONSE_MESSAGE.FINDING_CONTACT_ERROR} ${err}`);
       return apiResponse.ErrorResponse(res, err);
     }
   }

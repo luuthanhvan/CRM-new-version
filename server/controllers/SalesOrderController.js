@@ -3,6 +3,7 @@ const { mutipleMongooseToObject } = require("../ultils/mongoose");
 const apiResponse = require("../ultils/apiResponse");
 const logger = require("../configs/winston");
 const { RESPONSE_MESSAGE } = require("../ultils/constants");
+const salesOrderService = require("../services/SalesOrderService");
 
 class SalesOrderController {
   storeSalesOrder(req, res) {
@@ -115,22 +116,20 @@ class SalesOrderController {
     }
   }
 
-  findSalesOrderByContactName(req, res) {
+  findSalesOrders(req, res) {
     try {
-      logger.info(RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_CONTACT_NAME);
-      const contactName = req.params.contactName;
-      SalesOrder.find({ contactName: contactName }).then((data) => {
-        logger.info(RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_CONTACT_NAME_SUCCESS);
+      logger.info(RESPONSE_MESSAGE.FINDING_SALES_ORDER);
+      const query = salesOrderService.getSalesOrderSearchQuery(req.query);
+      SalesOrder.find(query).then((data) => {
+        logger.info(RESPONSE_MESSAGE.FINDING_SALES_ORDER_SUCCESS);
         return apiResponse.successResponseWithData(
           res,
-          RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_CONTACT_NAME_SUCCESS,
+          RESPONSE_MESSAGE.FINDING_SALES_ORDER_SUCCESS,
           data
         );
       });
     } catch (err) {
-      logger.error(
-        `${RESPONSE_MESSAGE.FINDING_SALES_ORDER_BY_CONTACT_NAME_ERROR} ${err}`
-      );
+      logger.error(`${RESPONSE_MESSAGE.FINDING_SALES_ORDER_ERROR} ${err}`);
       return apiResponse.ErrorResponse(res, err);
     }
   }

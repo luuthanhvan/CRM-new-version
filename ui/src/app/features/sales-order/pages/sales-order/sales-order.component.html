@@ -10,17 +10,6 @@
         {{ "salesOrder.listOfSalesOrder" | translate }}
       </h3>
       <div class="float-end d-flex align-items-center gap-2">
-        <!-- <div class="search-field">
-          <mat-form-field appearance="outline">
-            <mat-icon>search</mat-icon>
-            <input
-              matInput
-              placeholder="{{ 'action.search' | translate }}"
-              [formControl]="searchText"
-            />
-            <mat-icon>clear</mat-icon>
-          </mat-form-field>
-        </div> -->
         <button
           mat-button
           [ngClass]="
@@ -53,6 +42,23 @@
           </span>
         </button>
       </div>
+    </div>
+    <div class="col-12 mb-3 search-field">
+      <mat-form-field appearance="outline">
+        <mat-icon>search</mat-icon>
+        <input
+          matInput
+          placeholder="{{ 'salesOrder.searchBySubject' | translate }}"
+          [formControl]="searchText"
+        />
+        <mat-icon
+          class="pointer icon-clear"
+          [matTooltip]="'shared.clear' | translate"
+          (click)="resetData()"
+        >
+          clear
+        </mat-icon>
+      </mat-form-field>
     </div>
     <div class="col-12 sales-order-list mb-3">
       <table
@@ -161,44 +167,6 @@
             </mat-icon>
           </td>
         </ng-container>
-
-        <!-- @for (column of displayedColumns; track column) {
-        <ng-container *ngIf="column === 'select'" matColumnDef="select">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td class="text-center" mat-cell *matCellDef="let element">
-            <input type="checkbox" [value]="element._id" />
-          </td>
-        </ng-container>
-        <ng-container
-          *ngIf="column !== 'select' && column !== 'actions'"
-          matColumnDef="{{ column }}"
-        >
-          <th class="text-center" mat-header-cell *matHeaderCellDef>
-            {{ displayedHeaders[column] }}
-          </th>
-          <td class="text-center pointer" mat-cell *matCellDef="let element">
-            {{ element[column] }}
-          </td>
-        </ng-container>
-        <ng-container *ngIf="column === 'actions'" matColumnDef="actions">
-          <th class="text-center" mat-header-cell *matHeaderCellDef>Actions</th>
-          <td class="text-center" mat-cell *matCellDef="let element">
-            <mat-icon
-              class="text-warning pointer mx-1"
-              (click)="openFormDialog('edit', element._id)"
-            >
-              edit
-            </mat-icon>
-            <mat-icon
-              class="text-danger pointer mx-1"
-              (click)="onDelete(element._id, element.subject)"
-            >
-              delete
-            </mat-icon>
-          </td>
-        </ng-container>
-        } -->
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>

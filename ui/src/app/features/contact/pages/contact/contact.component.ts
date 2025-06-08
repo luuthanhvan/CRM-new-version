@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,6 +34,22 @@ import { ContactFormComponent } from '~features/contact/components/contact-form/
 import { DialogComponent } from '~core/components/dialog/dialog.component';
 import { ContactDetailsComponent } from '~features/contact/components/contact-details/contact-details.component';
 import { NoDataFoundComponent } from '~core/components/no-data-found/no-data-found.component';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+} from '@angular/forms';
+
+interface FilterCriteria {
+  leadSrc?: string;
+  assignedTo?: string;
+  contactName?: string;
+  createdTimeFrom?: object;
+  createdTimeTo?: object;
+  updatedTimeFrom?: object;
+  updatedTimeTo?: object;
+};
 
 @Component({
   selector: 'app-contact',
@@ -83,6 +99,10 @@ export class ContactComponent implements OnInit {
   dataSource = new MatTableDataSource<Contact>([]);
   totalRecords: number = 0;
   contactIdsChecked: string[] = [];
+  searchText: FormControl = new FormControl('');
+  search$!: Observable<Contact[]>;
+  filterSubject: BehaviorSubject<FilterCriteria> =
+    new BehaviorSubject<FilterCriteria>({});
 
   constructor(
     private router: Router,
@@ -113,11 +133,42 @@ export class ContactComponent implements OnInit {
   }
 
   loadData() {
-    this.contactService.getListOfContacts().subscribe((data) => {
-      this.totalRecords = data.length;
-      this.dataSource = new MatTableDataSource(data);
-      this.dataSource.paginator = this.contactPaginator;
-    });
+    this.search$ = this.searchText.valueChanges.pipe(
+      startWith(''),
+      tap((contactName) => {
+        // handle the search value before doing any futher steps
+      }),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((contactName) =>
+        contactName
+          ? this.contactService.searchContacts([
+              { paramName: 'contactName', paramVal: contactName },
+            ])
+          : of(null)
+      )
+    );
+
+    combineLatest([this.contactService.getListOfContacts(), this.search$])
+      .pipe(
+        map(([contacts, searchResult]) => {
+          const sourceData = searchResult
+            ? (searchResult as { [key: string]: any })['data']
+            : contacts;
+          return sourceData;
+        })
+      )
+      .subscribe((data) => {
+        this.totalRecords = data.length;
+        this.dataSource = new MatTableDataSource(data);
+        this.dataSource.paginator = this.contactPaginator;
+      });
+  }
+
+  resetData() {
+    this.filterSubject.next({});
+    this.searchText = new FormControl('');
+    this.loadData();
   }
 
   openFormDialog(action: string, contactId?: string) {
@@ -227,5 +278,10 @@ export class ContactComponent implements OnInit {
         1
       );
     }
+  }
+
+  applySelectFilter(filterValue: string, filterBy: string) {
+    const currentFilterObj = this.filterSubject.getValue();
+    this.filterSubject.next({ ...currentFilterObj, [filterBy]: filterValue });
   }
 }
