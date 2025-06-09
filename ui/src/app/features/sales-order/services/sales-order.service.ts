@@ -110,10 +110,29 @@ export class SalesOrderService {
     paramsArr?: paramObj[],
     headerOptions?: headerObj[]
   ): Observable<any> {
-    return this.endpointService.fetchEndpoint(
-      this.endpoints.salesOrder.v1.searchSalesOrder,
-      paramsArr || [],
-      headerOptions
-    );
+    return this.endpointService
+      .fetchEndpoint(
+        this.endpoints.salesOrder.v1.searchSalesOrder,
+        paramsArr || [],
+        headerOptions
+      )
+      .pipe(takeUntil(this.stop$));
+  }
+
+  countSalesOrder(
+    countBy: string,
+    paramsArr?: paramObj[],
+    headerOptions?: headerObj[]
+  ): Observable<any> {
+    return this.endpointService
+      .fetchEndpoint(
+        `${this.endpoints.salesOrder.v1.countSalesOrder}/${countBy}`,
+        paramsArr || [],
+        headerOptions
+      )
+      .pipe(
+        map((res) => res['data']),
+        takeUntil(this.stop$)
+      );
   }
 }

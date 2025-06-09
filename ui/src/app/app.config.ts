@@ -2,7 +2,6 @@ import {
   ApplicationConfig,
   provideZoneChangeDetection,
   inject,
-  importProvidersFrom,
 } from '@angular/core';
 import {
   createUrlTreeFromSnapshot,
@@ -28,6 +27,7 @@ import { TranslateLoader, provideTranslateService } from '@ngx-translate/core'; 
 import { TranslateHttpLoader } from '@ngx-translate/http-loader'; // loads translations from JSON files.
 /* Internationalization (i18n) */
 import { authenticationInterceptor } from '~core/interceptors/auth.interceptor';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'i18n/', '.json');
@@ -65,7 +65,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(
       withFetch(),
-      withInterceptors([ authenticationInterceptor ]),
+      withInterceptors([authenticationInterceptor])
     ),
     provideAnimationsAsync(),
     provideTranslateService({
@@ -76,5 +76,6 @@ export const appConfig: ApplicationConfig = {
       },
       defaultLanguage: 'en',
     }),
+    provideCharts(withDefaultRegisterables()),
   ],
 };

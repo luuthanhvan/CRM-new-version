@@ -87,6 +87,9 @@ const RESPONSE_MESSAGE = Object.freeze({
   FINDING_SALES_ORDER: "Finding sales order...",
   FINDING_SALES_ORDER_SUCCESS: "Finding sales order successfully!",
   FINDING_SALES_ORDER_ERROR: "Error while finding sales order:",
+  COUNTING_NO_SALES_ORDERS_BY_STATUS: "Counting number of sales order based on Status...",
+  COUNTING_NO_SALES_ORDERS_BY_STATUS_SUCCESS: "Counting number of sales order based on Status successfully!",
+  COUNTING_NO_SALES_ORDERS_BY_STATUS_ERROR: "Error while counting number of sales order based on Status:",
   CREATING_NEW_CONTACT: "Creating new contact...",
   CREATING_NEW_CONTACT_SUCCESS: "Creating new contact successfully!",
   CREATING_NEW_CONTACT_ERROR: "Error while creating new contact:",
@@ -111,6 +114,9 @@ const RESPONSE_MESSAGE = Object.freeze({
   FINDING_CONTACT: "Finding contacts...",
   FINDING_CONTACT_SUCCESS: "Finding contacts successfully!",
   FINDING_CONTACT_ERROR: "Error while finding contacts:",
+  COUNTING_NO_CONTACTS_BY_LEAD_SRC: "Counting number of contacts based on Lead source...",
+  COUNTING_NO_CONTACTS_BY_LEAD_SRC_SUCCESS: "Counting number of contacts based on Lead source successfully!",
+  COUNTING_NO_CONTACTS_BY_LEAD_SRC_ERROR: "Error while counting number of contacts based on Lead source:",
 });
 
 module.exports = {

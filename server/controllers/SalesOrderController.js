@@ -133,6 +133,34 @@ class SalesOrderController {
       return apiResponse.ErrorResponse(res, err);
     }
   }
+
+  countNoSalesOrdersByStatus(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.COUNTING_NO_SALES_ORDERS_BY_STATUS);
+      SalesOrder.aggregate([
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+          },
+        },
+      ]).then((data) => {
+        logger.info(
+          RESPONSE_MESSAGE.COUNTING_NO_SALES_ORDERS_BY_STATUS_SUCCESS
+        );
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.COUNTING_NO_SALES_ORDERS_BY_STATUS_SUCCESS,
+          data
+        );
+      });
+    } catch (err) {
+      logger.error(
+        `${RESPONSE_MESSAGE.COUNTING_NO_SALES_ORDERS_BY_STATUS_ERROR} ${err}`
+      );
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
 }
 
 module.exports = new SalesOrderController();

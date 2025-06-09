@@ -126,10 +126,29 @@ export class ContactService {
     paramsArr?: paramObj[],
     headerOptions?: headerObj[]
   ): Observable<any> {
-    return this.endpointService.fetchEndpoint(
-      this.endpoints.contact.v1.searchContact,
-      paramsArr || [],
-      headerOptions
-    );
+    return this.endpointService
+      .fetchEndpoint(
+        this.endpoints.contact.v1.searchContact,
+        paramsArr || [],
+        headerOptions
+      )
+      .pipe(takeUntil(this.stop$));
+  }
+
+  countContacts(
+    countBy: string,
+    paramsArr?: paramObj[],
+    headerOptions?: headerObj[]
+  ): Observable<any> {
+    return this.endpointService
+      .fetchEndpoint(
+        `${this.endpoints.contact.v1.countContact}/${countBy}`,
+        paramsArr || [],
+        headerOptions
+      )
+      .pipe(
+        map((res) => res['data']),
+        takeUntil(this.stop$)
+      );
   }
 }

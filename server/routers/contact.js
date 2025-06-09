@@ -12,6 +12,11 @@ router.get(
   contactController.getListOfContacts
 );
 router.get("/search", jwtHelper.verifyJwtToken, contactController.findContacts);
+router.get(
+  "/count/lead-source",
+  jwtHelper.verifyJwtToken,
+  contactController.countNoContactsByLeadSrc
+);
 router.post(
   "/delete",
   jwtHelper.verifyJwtToken,

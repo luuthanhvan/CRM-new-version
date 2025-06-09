@@ -23,6 +23,7 @@ export const getEndpoints = () => {
         contactNameList: `${environment.apiBaseUrl}/v1/contact/list/contact-name`,
         bulkDeleteContacts: `${environment.apiBaseUrl}/v1/contact/delete`,
         searchContact: `${environment.apiBaseUrl}/v1/contact/search`,
+        countContact: `${environment.apiBaseUrl}/v1/contact/count`
       }
     },
     salesOrder: {
@@ -31,6 +32,7 @@ export const getEndpoints = () => {
         salesOrderList: `${environment.apiBaseUrl}/v1/sales-order/list`,
         bulkDeleteSalesOrders: `${environment.apiBaseUrl}/v1/sales-order/delete`,
         searchSalesOrder: `${environment.apiBaseUrl}/v1/sales-order/search`,
+        countSalesOrder: `${environment.apiBaseUrl}/v1/sales-order/count`,
       }
     }
   } as const;

@@ -158,6 +158,32 @@ class ContactController {
       return apiResponse.ErrorResponse(res, err);
     }
   }
+
+  countNoContactsByLeadSrc(req, res) {
+    try {
+      logger.info(RESPONSE_MESSAGE.COUNTING_NO_CONTACTS_BY_LEAD_SRC);
+      Contacts.aggregate([
+        {
+          $group: {
+            _id: "$leadSrc",
+            count: { $sum: 1 },
+          },
+        },
+      ]).then((data) => {
+        logger.info(RESPONSE_MESSAGE.COUNTING_NO_CONTACTS_BY_LEAD_SRC_SUCCESS);
+        return apiResponse.successResponseWithData(
+          res,
+          RESPONSE_MESSAGE.COUNTING_NO_CONTACTS_BY_LEAD_SRC_SUCCESS,
+          data
+        );
+      });
+    } catch (err) {
+      logger.error(
+        `${RESPONSE_MESSAGE.COUNTING_NO_CONTACTS_BY_LEAD_SRC_ERROR} ${err}`
+      );
+      return apiResponse.ErrorResponse(res, err);
+    }
+  }
 }
 
 module.exports = new ContactController();

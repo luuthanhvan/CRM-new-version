@@ -26,6 +26,11 @@ router.get(
   salesOrderController.findSalesOrders
 );
 router.get(
+  "/count/status",
+  jwtHelper.verifyJwtToken,
+  salesOrderController.countNoSalesOrdersByStatus
+);
+router.get(
   "/:id",
   jwtHelper.verifyJwtToken,
   salesOrderController.getSalesOrder

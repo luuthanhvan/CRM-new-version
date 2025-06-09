@@ -5,6 +5,7 @@ import { LoginComponent } from '~features/authentication/pages/login/login.compo
 import { SalesOrderComponent } from '~features/sales-order/pages/sales-order/sales-order.component';
 import { ContactComponent } from '~features/contact/pages/contact/contact.component';
 import { UserComponent } from '~features/user/pages/user/user.component';
+import { DashboardComponent } from '~features/dashboard/pages/dashboard/dashboard.component';
 
 export const appRoutes: Routes = [
   {
@@ -12,7 +13,7 @@ export const appRoutes: Routes = [
     component: HomeComponent,
     canActivate: [AuthGuard], // require for load sign-in page first
     children: [
-      // { path: 'dashboard' },
+      { path: 'dashboard', component: DashboardComponent },
       { path: 'contact', component: ContactComponent },
       { path: 'sales-order', component: SalesOrderComponent },
       { path: 'user', component: UserComponent },
