@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(userInfo.username, userInfo.password).subscribe({
       next: (res) => {
         this.authService.setToken(res['data']);
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/dashboard');
       },
       error: (err) => {
         this.toastService.showErrorMessage(err.error['message'].message);
