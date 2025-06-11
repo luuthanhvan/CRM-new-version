@@ -56,7 +56,7 @@
       "active": "Active",
       "email": "Email",
       "phone": "Phone number",
-      "createdTime":"Created time"
+      "createdTime": "Created time"
     }
   },
   "dashboard": {
