@@ -53,6 +53,7 @@ export class UserComponent implements OnInit {
     'isAdmin',
     'isActive',
     'createdTime',
+    // 'modify',
   ];
 
   constructor() {

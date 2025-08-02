@@ -1,39 +1,31 @@
-## How to install and run?
-This repo is separated into two main directories ```ui``` and ```server```. <br />
-```ui``` contains the UI code (Angular v17) <br />
-```server``` contains the BE code (NodeJS and ExpressJS) <br />
-So first of all you need to install the necessary libraries and run the code separately in these two directories.
+# CRM
 
-### Download and install NodeJS and MongoDB
-Find the installation instructions file in ```docs``` directory.
+<b>Customer Relationship Management</b> application - a web-based that enables businesses to manage customer data, track sales and activities. 
 
-### Server
-* Open another termial and run these following commands
-```
-1. cd server
-2. npm install
-3. npm start
-```
-* After running the server successfully, you need to run the script to add some user data
-(the sample data is in server/json-data/sample-users.json file) <br />
-Just open a new terminal and run these following commands to run the script
-```
-1. cd server/scripts
-2. node createUsers.js
-```
+## 📖 Introduction
 
-### UI
-Open a termial and run these following commands line by line
-```
-1. cd ui
-2. npm install
-3. npm start
-```
+This is a new version of a CRM application that I built during my internship at a tech company.
 
-## Customization
-Just in case you want to run the server in different port, you just need to
-1. Change the ```SERVER_PORT``` in ```server/.env``` file.
-2. Change the same port number of the ```baseUrl``` in ```ui/src/assets/environment.json```<br />
+<b>🚀 What's new?</b>
 
-Example:
-If your ```SERVER_PORT``` is <b>4000</b>, then the ```baseUrl``` will be http://localhost:<b>4000</b>
+- A brand new user interface - colors, fonts, styles
+- Restructuring the application folder structure as well as the codebase
+- Introducing some new features (<i>in progress</i>)
+
+## 🧬 Repo structure
+
+This repo is separated into two main folders ```ui``` and ```server```. <br />
+```ui``` contains the UI code <br />
+```server``` contains the BE code <br />
+
+So first of all you need to install the necessary libraries and run the code separately in these two directories. I have attached README.md file which contains detailed installation instruction in each folder. So let's find out! 😉
+
+## 📝 Prerequisites
+
+- Operating System - Windows 10 or 11
+- Node.js - ^20.11.1, or ^22.0.0.
+- Angular - v19.2.0 or latest
+- Text editor - Visual Studio Code
+- Terminal - Required for running the app. I recommend you use `Windows Terminal` which can be found and installed via Microsoft Store if you are using Windows OS. You can open multiple ternimal tabs under one window, Unicode and UTF-8 character support, custom themes, styles, and configurations.
+
+<b>Note</b>: There is the fact that Javascript code can only be executed inside the browser. If you want to run the standalone Javascript code, you do need a tool to run and compile them on your local machine. That is the reason why we need NodeJS, a JavaScript runtime environment. So first up, make sure you have already installed NodeJS before install other requirements. In case, you have not, please follow the instruction in `server/README.md` to install it!
